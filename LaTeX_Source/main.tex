@@ -1,0 +1,78 @@
+\documentclass[a4paper, twoside, 11pt]{report} %LaTeX Standard
+%\documentclass[a4paper, 12pt]{report} %LaTeX Standard
+
+%%style des dokumentes
+\input{./files/inc/style}
+%%dokument beginnen
+\begin{document}
+
+\pagenumbering{roman}
+
+
+%\input{./files/inc/maintitle}
+\input{./files/inc/aufgabenstellung}
+
+\selectlanguage{english}
+\input{./files/abstract}
+\selectlanguage{ngerman}
+\input{./files/msummary}
+
+\tableofcontents
+%\listoffigures
+%\listoftables
+
+%%files einfügen
+\cleardoublepage
+\pagenumbering{arabic}
+\part{Einführung}
+\label{par:Einfuehrung}
+\vspace{2cm}
+Es werden grundlegende Begriffe erklärt und es wird ein Einblick in die Thematik Sicherheit gegeben.
+
+	\input{./files/einleitung}
+	\input{./files/sicherheit}
+	
+\part{Sicherheitstechnologien}
+\label{par:Sicherheitstechnologien}
+\vspace{2cm}
+Es werden verschiedene Technologien vorgestellt, die zur Sicherheit eines Systems beitragen können, bzw. für die Übung verwendet werden. Genauer betrachtet wird in diesem Teil die Technik des Härtens und PAM (Pluggable Authentication Module).
+Im Softwareteil befindet sich eine kurze Erläuterung der Funktionalität von PitBull, der Kommandos \verb~rlogin~, \verb~finger~, \verb~arp~ und eine Beschreibung der Konfiguration von VMware.
+	\input{./files/hardening}
+	\input{./files/software}
+
+%\part{Testing}
+%\label{par:Testing}
+
+\part{Lab}	
+\label{par:Lab}
+\vspace{2cm}
+Der folgende Teil enthält eine Beschreibung zur Installation der Übungsumgebung, sowie die Übungsaufgaben und deren Lösungen.
+%	\input{./files/uebungsbeschreibung}
+	\input{./files/installation}
+	\input{./files/uebungsaufgaben}
+%	\input{./files/fragenkatalog}
+
+\part{Schlussfolgerungen}
+\vspace{2cm}
+Dieser Teil umfasst ein Fazit und einen Ausblick der Arbeit.
+\input{./files/schlussfolgerung}
+
+%%anhang im kolumnetitel
+\renewcommand{\chaptermark}[1]{%
+\markboth{\appendixname\ \thechapter{}: #1}{}}
+\renewcommand{\sectionmark}[1]{%
+\markright{\thesection{}: #1}{}}
+
+\begin{appendix}
+	\input{./files/analyse}
+	\input{./files/evaluation_attacken}
+	\input{./files/hwevaluation}
+	\input{./files/cdbeilage}
+	\input{./files/inc/projektmanagement}
+	\input{./files/inc/glossar}
+	\bibliography{./files/inc/references}
+	\label{bibliography}
+	\printindex
+\end{appendix}
+
+\end{document}

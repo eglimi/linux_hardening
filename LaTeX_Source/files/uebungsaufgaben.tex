@@ -1,0 +1,162 @@
+\chapter{Übungen}
+\label{cha:Uebungen}
+Ziel der Übung ist es, die Prinzipien des Härtens eines Systems zu verstehen und anhand verschiedener Tests praktisch "`erleben"' zu können. Der konkrete Übungsaufbau und -ablauf ist im Anhang \ref{cha:EvaluationDesUebungsablaufs} im Abschnitt \ref{sec:UebungVariante2} beschrieben.
+
+In diesem Kapitel sind Wissensfragen und praktische Übungen zusammengestellt. Sie könnten dazu dienen, in einer Übung verwendet zu werden. Das Kapitel ist unterteilt in Übungsaufgaben \ref{sec:Aufgaben} und Lösungen \ref{sec:Loesungen}.
+%----------
+\section{Aufgaben}
+\label{sec:Aufgaben}
+\begin{enumerate}
+\item
+\begin{enumerate}
+\item Es gibt eine einfache Methode, um sich in ein Linux System als root einzuloggen, ohne dass man ein Passwort hat. Versuchen Sie herauszufinden, wie es funktioniert und probieren Sie Ihre Lösung aus.\\
+\textit{Hinweis:} Der Bootmanager \textit{Grub} kann im \glqq single user mode\grqq\ gestartet werden.
+\item Versuchen Sie das Problem von zu lösen, indem sie ein Bootmanager Passwort setzen.\\
+\textit{Hinweis:} \verb~info grub~
+\end{enumerate}
+\item Finden Sie mit dem \verb~ps~ Befehl heraus, welche Prozesse gerade am Laufen sind. Welcher Prozess startet die shell (hier bash)?
+\item Sie wollen, dass sich kein Benutzer ausser root am System anmelden kann, ohne den Rechner im \glqq single user mode\grqq\ aufzustarten. Was tun Sie?
+\item Sie wollen eine Datei \verb~/etc/loginuser~ erstellen, so dass sich nur noch die in dieser Datei aufgelisteten Benutzer am System per \textit{login} anmelden können.\index{PAM!Übung}
+\begin{enumerate}
+\item Konfigurieren Sie PAM so, dass dies möglich wird.\\ \textit{Hinweis}: Verwenden Sie das Modul \verb~pam_listfile.so~
+\item Testen Sie die Konfiguration mit einem bestimmten Benutzer, der ein gültiges Passwort besitzt (allenfalls einen neuen Benutzer anlegen) und in der Datei eingetragen ist. Versuchen Sie auch, sich unter einem gültigen Benutzer einzuloggen, der \emph{nicht} in der obigen Datei aufgelistet ist.
+\item Was passiert, wenn Sie sich mit einem gesperrten Benutzer (nicht in der Datei eingetragen) grafisch anmelden und warum?
+\end{enumerate}
+\item Was versteht man unter dem Begriff \glqq Härten eines Systems\grqq?
+\item Was ist der Vorteil eines hardened Servers?
+\item Was kann zusätzlich zum Härten gemacht werden, damit die Sicherheit weiter erhöht wird?
+\item Was für Produkte gibt es, die das Härten automatisch übernehmen?
+\item Wie ist ein sicheres Passwort aufgebaut und wie kann es schon bei der Erstellung überprüft werden?
+\item Welche Dateirechte gibt es unter Linux und wie können sie verändert werden?
+\item Was bedeutet PAM?
+\item In welcher Datei kann man unter PAM das Verhalten von \verb~login~ konfigurieren?
+\item Mittels ARP-Spoofing kann eine Man-in-the-Middle-Attacke durchgeführt werden. Es soll zu einem Rechner eine FTP-Verbindung hergestellt werden. Die MAC-Adresse des FTP-Servers sei bekannt. Wie kann man verhindern, dass sich jemand dazwischen schaltet? (Hinweis: Den Befehl \verb~arp~ verwenden) 
+\item Mittels \verb~rlogin~ ist es möglich zu einem Rechner eine Verbindung aufzubauen, ohne das ein Passwort angegeben werden muss.
+	\begin{enumerate}
+	\item Welche Einstellungen müssen dazu auf dem Server gemacht werden? (Bemerkung: Um Netzwerkdienste mit geänderte Einstellungen neu zu starten muss der Befehl \verb~/etc/init.d/xinetd restart~\index{xinetd@\texttt{xinetd}} eingegeben werden.)
+	\item Wie lautet die Syntax des Befehls auf dem Client, um die Verbindung herzustellen?
+	\item Auf dem Server wurde die IP-Adresse 192.168.0.50 als \emph{trusted} konfiguriert. Wie melden sie sich mit diesem Wissen ohne Passwort beim Server an?
+	\end{enumerate}
+\item 
+	\begin{enumerate}
+	\item Das Standard-Server verwendet kein Passwort-Shadowing. Wie ist der Inhalt der Datei \verb~\etc\passwd~ zu interpretieren?
+	\item Das gesicherte System verwendet Passwort-Shadowing. Vergleichen sie den Inhalt der Datei \verb~\etc\passwd~ mit der, des Standard-Servers. Wo sind die Passworte gespeichert?
+	\end{enumerate}
+\item Auf dem Standard-Server ist ein Dienst Namens \verb~finger~ installiert. 
+	\begin{enumerate}
+	\item Versuchen sie von einem anderen Linux-Rechner aus mit dem Befehl \verb~finger~ Informationen über den Benutzer \verb~master~ auf dem Standard-Server herauszufinden.
+	\item Wie können Sie diesen Dienst auf dem Standard-Server ausschalten?
+	\end{enumerate}
+\end{enumerate}
+
+
+%-----------------
+\section{Lösungen}
+\label{sec:Loesungen}
+\begin{enumerate}
+	\item
+	\begin{enumerate}
+	\item Starten Sie das System neu und wählen sie den gewünschten Eintrag im Bootmenu an. Drücken Sie anschliessen \verb~e~ um den String zu editieren. Hängen Sie dem String folgendes an:
+\begin{verbatim}
+console=tty0 single
+\end{verbatim}
+Damit sieht ein kompletter boot Eintrag z.B. wie folgt aus:
+\begin{verbatim}
+kernel /boot/vmlinuz-2.4.20 ro root=/dev/hda1 console=tty0 single
+\end{verbatim}
+Drücken Sie anschliessend \verb~Enter~ um zu Bestätigen, gefolgt von \verb~b~ um das geänderte Menu zu booten. Wie sie sehen, haben Sie ohne sich einzuloggen root Berechtigung auf dem System. 
+
+Bemerkung: Das Bootmenu wird dabei nur temporär geändert. Das heisst, beim nächsten Start sind wieder die Originaleinstellungen vorhanden.
+	\item Setzen Sie ein Bootmanager Passwort\index{Bootmanager Passwort|textbf}. Damit kann verhindert werden, dass der String, der dem Kernel übergeben wird, verändert werden kann. Es kann sogar verhindert werden, dass ein Bootmenu-Eintrag ohne ein Passwort gestartet werden kann. Das folgende Beispiel erläutert wieder den Vorgang beim \textit{Grub} Bootmanager\index{Grub Bootmanager}.
+
+Das folgende ist ein Auszug aus \verb~/boot/grub/menu.lst~~, einer Konfigurationsdatei von \textit{Grub}:
+\begin{verbatim}
+#Globale Optionen
+default=0
+timeout=10
+
+#Menu Eintrag
+title Red Hat Linux (2.4.18-3)
+  root(hd0,0)
+  kernel /vmlinuz-2.4.18-3 ro root=/dev/hda2
+  initrd /initrd-2.4.18-3.img
+\end{verbatim}
+Diese Datei kann nun um einen Passwort Eintrag erweitert werden. Dazu ist folgender Eintrag in der globalen Sektion zu machen:
+\begin{verbatim}
+password --md5 <verschlüsseltes Passwort>
+\end{verbatim}
+Um das gewünschte Passwort in verschlüsselter Form zu erhalten, kann das Programm \textit{grub-md5-crypt}\index{grub-md5-crypt@\texttt{grub-md5-crypt}} verwendet werden. Dieses Programm fragt nach dem Passwort und gibt dieses in verschlüsselter Form auf der Konsole aus. Dieses wird anschliessend in die obige Konfigurationsdatei eingefügt.
+
+Soll zusätzlich das Starten des System ohne Passwort verhindert werden, kann das mit der Eingabe von \verb~lock~ am Ende des Menu Eintrages erreicht werden. Falls mehrere Menu Einträge vorhanden sind, muss dies für jeden Eintrage eingegeben werden.
+
+Die Konfigurationsdatei\index{Grub Bootmanager!Konfigurationsdatei} könnte mit den vorgenommenen Änderungen z.B. wie folgt aussehen:
+\begin{verbatim}
+#Globale Optionen
+default=0
+timeout=10
+password --md5 $1$6sUzf/$6jYUb70dd.ZaYNxOEv7le1
+
+#Menu Eintrag
+title Red Hat Linux (2.4.18-3)
+  root(hd0,0)
+  kernel /vmlinuz-2.4.18-3 ro root=/dev/hda2
+  initrd /initrd-2.4.18-3.img
+  lock
+\end{verbatim}
+Die Änderungen werden nach dem Speichern der Datei aktiv. Beim nächsten Start muss das Passwort eingegeben werden, um das System starten zu können. 
+	\end{enumerate}
+	\item Verwenden Sie folgenden Befehl: \verb~ps ax -H -o user,pid,tty,stat,command~.\\Der Ablauf ist folgender: \textit{init} $longrightarrow$ \textit{login} $longrightarrow$ \textit{bash}. Falls Sie sich grafisch angemeldet haben, sieht die Lösung verschieden aus (je nach Windowmanager).
+	\item Legen Sie die Datei \verb~/etc/nologin~ an. Sie können diese Datei noch mit einer Meldung füllen, die dem Benutzer angezeigt wird.\\Lösung von \url{http://www.kernel.org/pub/linux/libs/pam/Linux-PAM-html/pam-6.html#ss6.17}
+	\item
+	\begin{enumerate}
+	\item
+		\begin{enumerate}
+			\item \verb~echo test >> /etc/loginusers~
+			\item Editieren von \verb~/etc/pam.d/login~. Einfügen folgender Zeile:\\ \verb~auth required /lib/security/pam_listfile.so~\\ \verb~onerr=succeed item=user sense=allow file=/etc/loginuser~ 
+		\end{enumerate}
+		\item Die Benutzer, die in \verb~/etc/loginusers~ eingetragen sind, können sich anmelden, die restlichen nicht mehr.
+		\item Die grafische Anmeldung funktioniert noch, da nur \verb~/etc/pam.d/login~ verändert wurde. \verb~/etc/pam.d/gdm~ (bzw \verb~/etc/pam.d/xdm~, je nachdem, welcher grafische login-Manager verwendet wurde) blieb unverändert.
+	\end{enumerate}
+	Lösung von \url{http://www.kernel.org/pub/linux/libs/pam/Linux-PAM-html/pam-6.html#ss6.13}
+	\item Das System wird so konfiguriert und eingestellt, dass er nur die Dienste anbietet, die wirklich benötigt werden und nur die Benutzer eingerichtet sind, die tatsächlich ein Login benötigen. Alle weiteren Einstellungen und Pakete werden deaktiviert, bzw. deinstalliert. Die aktivierten Dienste werden so konfiguriert, dass sie maximale Sicherheit bieten.
+	\item Das Sicherheitsrisiko, dass sich jemand unrechtmässig Zugang verschafft wird verringert.
+Durch das Entfernen nicht benötigter Dienste gibt es auch weniger potentielle Fehlerfälle.
+	\item Möglichkeiten sind (nicht abschliessend):
+	\begin{itemize}
+	\item Firewall
+	\item Inrusion Detection System
+	\item Intrusion Prevention
+	\end{itemize} 
+	\item \textit{harden}, \textit{Bastille Linux}
+	\item Ein sicheres Passwort ist mind. 6 Zeichen lang, hat mind. 2 alphabetische Zeichen und 1 numerisches oder 1 spezial Zeichen. Das Passwort muss vom user login verschieden sein und darf auch nicht davon abgeleitet werden können. Es darf zudem nicht von einem Wort oder einer Wortkombination abgeleitet werden können.
+	
+ Passwörter können schon beim erstellen überprüft werden. Dazu verwenden Sie das PAM-Modul \textit{pam\_cracklib} in Verbindung mit \textit{cracklib} und \textit{cracklib\_dict}
+ \item Read (lesen), Write (schreiben) und Executable (ausführen). Sie können mit dem Befehl \verb~chmod~\index{chmod@\texttt{chmod}} verändert werden (\verb~man chmod~).
+ \item Pluggable Authentication Module
+ \item \verb~/etc/pam.d/login~
+
+\item Mit folgender Syntax \verb~arp -s {IP-Adresse} {MAC-Adresse}~, wird die MAC-Adresse fix einer IP-Adresse zugeteilt. Für die Adressen sind die Werte des FTP-Servers einzugeben. Somit ist es einem Angreiffer nicht mehr möglich auf diese IP-Adresse ein ARP-Spoofing durchzuführen.
+\item
+	\begin{enumerate}
+	\item In der Datei \verb~.rhost~ muss die IP-Adresse des Systems eingetragen werden, dem vertraut werden soll.
+	\item \verb~rlogin -m {user} {Host}~
+	\item IP-Adresse ändern auf 192.168.0.50 und sich mit dem \verb~rlogin~ mit der Syntax aus der letzten Teilaufgabe einloggen.
+	\end{enumerate}
+\item
+	\begin{enumerate}
+	\item user hasch usw.
+	\item Die Hashwerte der Passworte sind nicht mehr in der Datei \verb~\etc\passwd~ sondern in einer anderen Datei Namens \verb~\etc\shadow~ gespeichert.
+	\end{enumerate}
+\item
+	\begin{enumerate}
+	\item \verb~finger master@{IP-Adresse des Standard Servers}~ 
+	\item Befindet sich diese Datei beispielsweise im \verb~home~-Verzeichnis des Benutzers \verb~bravo~ kann dieser Benutzer von den IP-Adressen 192.168.0.1 und 192.168.0.3 ohne Passwort auf das System zugreifen.
+Das Deaktivieren des Dienstes geschieht durch Editieren der Datei \verb~\etc\xinetd.d\finger~ (Siehe Abschnitt \ref{sec:finger}). 
+In der Konfigurationsdatei ist die Zeile \verb~disabled=no~. zu ersetzten durch \verb~disabled = yes~. Hiermit wird der Dienst deaktiviert, sobald das Netzwerk mit dem Befehl \verb~ixinetd.d restart~ neu gestartet wurde. Dieser Befehl kann nur mit root-Rechten ausgeführt werden.		
+	\end{enumerate}
+\end{enumerate}
+
+
+
+
+

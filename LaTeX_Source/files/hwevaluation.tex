@@ -1,0 +1,37 @@
+\chapter{Hardware Evaluation\index{Evaluation!Hardware}}
+\label{cha:HardwareEvaluation}
+Im Verlauf der Arbeit standen nacheinander zwei verschiedene Server mit unterschiedlich leistungsfähigen Komponenten für Testzwecke zur Verfügung (im Folgenden mit "`Alpha Lab"' und "`Beta Lab"' bezeichnet). Auf beiden Rechnern wurde Red Hat 7.3 und VMware Workstation Version 3.2 installiert. Im Folgenden werden die Hardwarekonfigurationen der beiden Systeme und das Verhalten der Systeme während dem Einrichten und den ersten Funktionstests geschildert, um einen Eindruck über die Anforderungen zu vermitteln.
+%----------
+\section{Alpha Lab}
+\label{sec:AlphaLab}
+Das zur Verfügung stehende Hostsystem hat folgende Hardwaredaten:
+\begin{itemize}
+\item 3.2 GB Festplatte
+\item Hauptspeicher 128 MB
+\item Intel Pentium II, 266 MHz
+\item ATI Mach64, 4 MB RAM
+\item Microsoft Maus (PS/2), zwei Knöpfe
+\item SVGA fähiger Bildschirm
+\item Standard 105 Tasten Keyboard
+\end{itemize}
+Es konnten maximal zwei virtuelle Systeme gleichzeitig gestartet werden. Pro Systemen stand maximal 32 MB Hauptspeicher zur Verfügung. Die Anzahl parallel aufgesetzter Systeme wurde auch durch die zur Verfügung stehende Festplattenkapazität stark eingeschränkt. Pro Server sollte mindestens 1 GB zur Verfügung stehen. Davon wird 1 GB bereits vom Hostsystem selbst verwendet. Die Systemreaktionen der virtuellen Systeme waren sehr träge. Die Konfigurationen aus den Konsolen der simulierten Server waren noch gut möglich. Der Bildaufbau dauerte teilweise ein bis zwei Sekunden. Bei Webzugriffen von einem beliebigen System im Uebungsnetz war nicht ersichtlich, dass es sich nur um einen simulierten Server handelte. Um zwei Webserver, ohne zusätzliche Dienste für eine Übung zu simulieren, würden diese Hardwarevoraussetzungen reichen. Das System wäre aber sehr verletzlich gegnüber einer \emph{Denial of Service Attacke}.
+%------------------
+\section{Beta Lab}
+\label{sec:BetaLab}
+Das zur Verfügung stehende Hostsystem hat folgende Hardwaredaten:
+\begin{itemize}
+\item 6.4 GB Festplatte
+\item Hauptspeicher 512 MB SDRAM
+\item Intel Pentium III, 550 MHz
+\item ATI Mach64, 16 MB RAM
+\item Microsoft Maus (PS/2), zwei Knöpfe
+\item SVGA fähiger Bildschirm
+\item Standard 105 Tasten Keyboard
+\end{itemize}
+Das starten von drei virtuellen Systemen gleichzeitig stellt kein Problem dar. Jedem virtuellen System stehen 128 MB Hauptspeicher zur Verfügung. Das Arbeiten mit den virtuellen Systemen war ohne grössere, bemerkbare Geschwindigekitseinbussen möglich.
+%------------------
+\section{Erkenntnis}
+Die Systemvoraussetzungen des Beta Labs waren gegnüber dem Alpha Lab wesentlich besser. Die Grösse der Harddisk reicht zwar aus, lässt aber für die Serverinstallationen nicht allzuviel Spielraum für das Installieren von zusätzlichen Paketen. Es stehen pro System (dem Host System inklusive) 1.6 GB Plattenspeicher zur Verfügung. Um möglichen Speicherplatzproblemen vorzubeugen, sollte das Host System mindestens 8 GB Festplattenspeicher besitzen, damit den drei virtuellen Systemen je 2 GB zur Verfügung stehen. Ansonsten genügen die Hardwarevoraussetzungen des Beta Labs den Übungsanforderungen.
+
+
+

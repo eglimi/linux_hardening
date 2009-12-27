@@ -1,0 +1,32 @@
+\chapter*{Management Summary}
+\addcontentsline{toc}{chapter}{Management Summary}
+
+\section*{Einleitung}
+Für Unternehmen entstehen jährlich immense Kosten durch Angriffe über das Internet.  Nach einer Schätzung von PricewaterhouseCoopers sind im Jahr 2000 Kosten in der Höhe von \$$1.6*10^{12}$ durch Viren entstanden. Aber nicht nur die verursachten Kosten, sondern auch der Schutz der Firmeninternen Daten beschäftigt die Unternehmen. Das sind Gründe, warum Sicherheit für viele Unternehmen immer wichtiger wurde. Sie wollen sich vor Angriffen schützen, um die damit verbundenen Kosten und Schäden zu minimieren. Jeder, der die Sicherheit seiner Systeme vernachlässigt, muss mit zusätzlichen Kosten und Schäden rechnen.
+
+Zum Glück sind nicht nur die Angriffe ausgereifter geworden, sondern auch die Methoden, sich davor zu schützen. In den letzten Jahren sind neue Verfahren entwickelt worden, die es erlauben, sich auch gegen professionelle Angriffe zu schützen. Diese Arbeit beschäftigt sich mit dem sogenannten Härten eines Systems. Durch Härten eines Systems wird versucht, dieses System sicherer zu machen.
+
+\section*{Ausgangslage}
+Der Auftrag dieser Arbeit kam von Prof. Dr. P. Heinzmann. Das Ziel war es, eine Übung zu erstellen. In dieser Übung sollte es möglich sein, verschiedene Prinzipien kennen zu lernen und zu erkennen, wie sie ein System sicherer machen. Einer dieser Vergleiche sollte zwischen einer manuellen Konfiguration und dem Produkt \textit{PitBull LX} der Firma Argus \cite{argus} sein. 
+
+Ein weiteres Ziel war es, die theoretischen Grundlagen des Härtens zu erarbeiten. Trotz dieser Ziele war zu Beginn nicht klar, ob diese Ziele überhaupt erreicht werden können, da niemand genau wusste, was der Begriff Härten alles umfasst.
+
+\section*{Vorgehen}
+Zuerst wurde versucht so viel wie möglich über das Härten von Systemen in Erfahrung zu bringen. Dazu wurde in verschiedenen Bibliothekskatalogen, Datenbanken mit Artikelverzeichnissen aus Fachzeitschriften und Wissenschaftsmagazinen, wie auch Internetforen und Webseiten gesucht. Parallel dazu fand die Einarbeitung in die Konfiguration eines Linuxservers, Anwendung von PitBull LX und VMware statt. Zwecks Qualitätskontrolle und Steigerung der Arbeitseffizienz wurde ein \LaTeX\-Guide erstellt, der alle \LaTeX -Befehle erläutert, die innerhalb des Berichtes verwendet werden würden.
+
+Nach einer ersten Phase des Einarbeitens in die Thematik wurde versucht das Thema einzugrenzen und einen Übungsaufbau zu definieren. Für die Übung zeigte sich, dass erstellen von verschiedenen Attackensczenarios am aufschlussreichsten für das vergleichen verschiedener Serverkonfigurationen. In der Folge wurde versucht verschiedene Attacken zu inszenieren. Nach einer ausgiebigen jedoch erfolglosen Recherche, wurde entschieden den Übungsablauf zu ändern. Anstatt mit Attacken werden nun die Unterschiede mit sicherheitskritischen Konfigurationen gezeigt. Während den Recherchen wurden parallel praktische Versuche mit einem Linuxserver gemacht und das Vorgehen und die Erkenntnisse in \LaTeX\ dokumentiert.
+\section*{Ergebnisse}
+Im Rahmen dieser Arbeit entstand eine theoretische Abhandlung der Prinzipien des Härtens. Es wurden verschiedene Aspekte des Härtens erarbeitet: Physisch, Lokal, Datei- und Dateisysteme, Passwörter und Verschlüsselung, Betriebssystem-Kern und Netzwerk. Besonders ausführlich wurde das Verfahren PAM (Pluggable Authentication Module) beschrieben, da dieses sehr verbreitet ist und viele Möglichkeiten bietet, die Sicherheit der Authentifizierung zu erhöhen. Alle Angaben, die das Härten des Systems betreffen, wurden Distributionsunabhängig gemacht.
+Es wurde ein Übungs/-auf/-bau realisiert, der es ermöglicht die Prinzipien des Härtens anzuwenden und somit besser zu verstehen. Die Abbildung \ref{pic:uebungsumgebung} zeigt eine Übersicht der Übungsinstallation.
+Für die Übungen stehen zwei komplett konfigurierten Server zur Verfügung: Ein nicht gehärteter und ein gehärteter Server (Server 1 und Server 2). Diese Server werden innerhalb von VMware gestartet. VMware simuliert die komplette Hardware eines Systems. Da VMware für die verbreitesten Betriebssysteme erhältlich ist, ist die Übung plattformunabhängig. Die Übung besteht aus verschiedenen Aufgaben bezüglich der Konfiguration eines System und den Diensten \verb~rlogin~ und \verb~finger~. Der Dienst \verb~rlogin~ kann verwendet werden, um eine Verbindung zu einem Server herzustellen. Mit dem Befehl \verb~finger~ können verschiedene Informationen über ein System gewonnen werden. Während der Übung können die Konfigurationseinstellungen überprüft werden, indem zwischen Server 1 und Server 2 die Dienste angewandt werden. Ebenfalls denkbar, ist das ausprobieren der Dienste auf dem simulierten Server eines anderen Übungsteilnehmers. Somit könnte die Übung auch zu zweit durchgeführt werden.
+\begin{figure}[H]
+	\begin{center}
+		\includegraphics[width=10cm]{./files/inc/pictures/pdf/uebungsuebersicht}
+		\caption{\label{pic:uebungsumgebung}Übungsumgebung}
+	\end{center}
+\end{figure}
+\section*{Ausblick}
+Mit dem Härten kann ein Systems sehr sicher gemacht werden. Dennoch gibt es andere Techniken, welche die Sicherheit ebenfalls verbessern. Diese Techniken sind keine Konkurrenz zum Härten, sondern viel mehr eine Ergänzung. Um einen gesamthaften Überblick über die Thematik Sicherheit geben zu können, müsste man diese Techniken ebenfalls berücksichtigen. Zudem umfasst das Härten eines Systems mehr Punkte, als in diesem Dokument beschrieben wurden. Die Auswahl erfolgte nach der Wichtigkeit aus der Sicht der Autoren. Es ist denkbar, diese Punkte mit Fehlenden zu ergänzen.
+Die Ausführliche Dokumentation der Recherchen für die Übung geeigneter Attacken zeigt, dass eine erfolgreiche Attacke, die dem Angreifer zu den Benutzerrechten eines Administrators verhilft nur mit sehr grossem Aufwand realisiert werden kann. Dies liegt vor allem daran, dass das Funnktionieren der Scripte von verschiedenen  Variablen der Systemkonfiguration des anzugreifenden Systems abhängen. Dazu gehören unter anderen die Version des Betriebssystems (oft auch die Version des Kernels) und die Version des anzugreifenden Dienstes. Darum ist es schwieriger für ein konkretes System einen funktionierenden Exploit zu finden, als mit einem Exploit-Script auf dem ganzen Internet ein angreifbares System.
+
+Die entstandene Übung kann beliebig erweitert werden. Die in der erarbeiteten Form bereitgestellten Fragen können je nach Anwendung und Anforderung umformuliert bzw. ergänzt werden.

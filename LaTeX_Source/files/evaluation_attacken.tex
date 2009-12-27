@@ -1,0 +1,93 @@
+\chapter{Evaluation einer Attacke\index{Evaluation!Exploit}\index{Exploit!Evaluation}}
+\label{cha:EvaluationEinerAttacke}
+Um den Vorteil eines mit PitBull\index{Pitbull} gesicherten Servers am Besten zeigen zu können, ist eine der mächtigsten Attacken auf einen Server nötig. Dazu gehört das direkte erlangen von Root-Rechten über einen Remote Zugang. Dies bedeutet, dass von einem, über das Netzwerk erreichbaren Rechner jemand die Möglichkeit erlangt, auf dem angegriffenen System beliebige Befehle auszuführen. Einem solchen Angriff entspricht die \emph{Bufferovwerflow Attacke}\index{Bufferoverflow Attacke} (genauer erklärt im folgenden Abschnitt \ref{sec:BufferoverflowAttacke}).
+
+Als Erstes werden neue Sicherheitslücken auf dem Internet publiziert. Darum wurde für die Suche nach Informationen über eine solche Attacke vor allem dieses Medium verwendet.
+\section{Bufferoverflow Attacke}
+\label{sec:BufferoverflowAttacke}
+\index{Bufferoverflow Attacke}\index{Stack}
+Diese Attacke nutzt Schwachstellen in der Implementation von Programmen aus, denen Parameter oder andere zu verarbeitende Daten übergeben werden können. Die Schwäche besteht darin, dass bei der Verarbeitung von übergebenen Daten, diese Daten in den Hauptspeicher kopiert werden, ohne dass die Grösse des dafür reservierten Speicherbereichs überprüft wird. Wird Beispielsweise als Parameter ein String von einer gewissen Länge erwartet, doch ein weitaus längerer String übergeben, wird trotzdem der ganze String in den Speicher geschrieben. Dabei werden andere Daten, die sich ebenfalls im Speicher befinden überschrieben. Falls sich das Programm in diesem Moment gerade innerhalb einer Subroutine befindet, befindet sich auch die Rücksprungadresse ins Hauptprogramm in diesem Speicherbereich. Ziel der Attacke ist es, diese Rücksprungadresse zu überschreiben und dabei eine Adresse zu setzten, die in den Bereich des Speichers springt, an dem sich der übergebenen String befindet. Gelingt dies, wird der Prozessor nach dem durcharbeiten der Subroutine versuchen, den übergebenen String als Programmcode zu interpretieren. Falls sich in dem String also Maschinencode in der Form von Binärwerten (sogenannter \emph{Payload}\index{Payload}) befindet, der über einen Methodenaufruf des Betriebssystes eine Shell ausführt, erhält der fremde Rechner Zugang zu einer Shell mit den Benutzerrechten des fehlerhaften Programmes.
+\section{Programmieren der Attacke}
+Um eine solche Attacke durchzuführen wurden zuerst Hintergrundinformationen über das Prinzip der Attacke gesucht. Als beste Quellen erwiesen sich hierfür zur Einführung in die Thematik der Artikel "`Das Sicherheitsloch"' aus dem Magazin c't \cite{ctexploit} und zur Vertiefung der Artikel "`Smashing the Stack for Fun"' aus dem Phrack Magazin \cite{phrackexploit}.
+
+Durch das Studium der Prinzipien wurde schnell klar, dass das Erstellen eines eigenen Exploits dieser Art dem Umfang einer ganzen Studienarbeit entsprechen würde (Details dazu sind in den oben genannten Quellen zu finden): 
+\begin{itemize}
+\item Analysieren von Quellcode eines Dienstes auf verletzliche Speicherzugriffe, beziehungsweise Aufrufe von bekannten Funktionen, die beim Speicherzugriff keine Bereichsprüfung der Variable durchführen
+\item Zusammenstellen des sogenannten Payloads der Attacke (dies sind die notwendigen Befehle in Maschinencode, um einen Betriebssystemaufruf zu tätigen, der beispielsweise eine Shell öffnet)
+\item Das anzugreifende Programm in einem Debugger ausführen, um eine bestimmte Speicheradresse (im Stack) zur Laufzeit des Programmes herauszufinden
+\item Ein Programm schreiben, das die Verbindung aufbaut und dem Dienst die nötigen Daten übermittelt
+\end{itemize}
+\section{Entscheid}
+\index{Evaluation!Entscheid!Programmieren eines Exploits}
+Um eine solche Attacke selber zu programmieren stand nicht genügend Zeit zur Verfügung. Aus diesem Grund wurde entschieden, auf dem Internet nach bereits vorhandenen Attacken für den Standard Server der Übungsinstallation aus Abschnitt \ref{subsec:VirtuelleServer} zu suchen.
+\section{Suche nach einem Exploit}
+Zuerst wird der Verlauf der Suche beschrieben und die genutzten Informationsquellen genannt. Anschliessend werden weitere Anregungen für eine Suche genannt.
+
+Bei der Suche nach einem Exploit wurden verschiedene Strategien verfolgt. Zuerst wurde eine sehr eingegrenzte Suche durchgeführt, anschliessend wurden die Kriterien des Exploits immmer mehr gelockert. Grob könnte die Suche und in folgende Phasen eingeteilt werden:
+\begin{enumerate}
+	\item Suche nach Exploits für die installierten Softwarepakete des aufgesetzten Standard Servers mit Red Hat 7.3
+	\item Suche nach Exploits für ältere Versionen der installierten Softwarepakete
+	\item Suche nach Exploits einer beliebigen lauffähigen Software unter Red Hat 7.3
+\end{enumerate}
+Im Folgenden sind die Ergebnisse der einzelnen Phasen zusammengefasst. Eine Auswahl der gefunden Scripte sind auf der beigelegten CD zu finden (\ref{cha:BeiliegendeCds} auf Seite \pageref{cha:BeiliegendeCds}).:
+\begin{enumerate}
+	\item Es wurden zwei Skripte für den \emph{Apache Server} gefunden, die aber nicht die erwarteten Reaktionen zeigten, bzw. nicht funktionierten.
+	\item Für eine ältere Version des \emph{Apache Servers} wurden verschiedene Scripte für die gleiche Schwachstelle gefunden. Die Apacheversion auf dem Server wurde durch eine ältere Version ersetzt. Dies galt auch für alle abhängigen Pakete. Dennoch erwies sich kein Script als tauglich.
+	\item Es wurde auf verschiedenen Webseiten auf eine Schwachstelle einer älteren Version des FTP-Serverprogrammes \emph{ProFTP} hingewiesen. Nach der Installation des Programmes wurde ein FTP-Exploit-Script ausgeführt, jedoch ohne Erfolg.
+\end{enumerate}
+\section{Informationskanäle}\index{Exploit!Quellen}
+Eine Auswahl der besuchten Internetseiten, die nach Informationen durchsucht wurden:
+\begin{description}
+	\item [online.securityfocus.com]Sehr Umfangreiche Datenbank bezüglich Computer Sicherheit
+	\item [packetstormsecurity.nl]Sehr umfangreiche Datenbank mit diversen Exploit-Be\-schreibungen inklusive Quellcode. Das Motto der Organisation \emph{Packet Storm} ist "`Know your enemy"'.
+	\item [www.phrack.org]Das Hacker und Phreak Magazin überhaupt. Es bietetet neue kreative Ideen für Hacking Ansätze.
+	\item [www.cultdeadcow.com]Seite einer Hackergruppe. Sie bieten ein paar wenige Tools und News an.
+	\item [www.atstake.com]Eine Netzwerksicherheit-Beratungs Firma in Amerika. Sie bietet verschiedene ausgeklügelte Netzwerksicherheit-Tools an. Unter anderem auch solche, die Applikationen auf potentielle Bufferoverflow-Fehler prüfen.
+\end{description}
+Alternativ befragten wir Mitglieder der LUGS (Linux User Group) ein Linux-Verein an der Hochschule Rapperswil, die uns einzelne der oben genannten Webseiten verwiesen.
+\section{Ungenutzte Informationskanäle}\index{Exploit!Informationsquellen}
+Der Internet Relay Chat (IRC)\index{IRC} bietet eine intensiv genutzte Plattform zum Infor\-ma\-ti\-ons- und Pro\-grammaustausch. Unter anderen auch zu Themen die sich in Grauzonen der Legalität befinden. Um diese Quellen allerdings gezielt und effizient nutzen zu können, muss man sich während einer gewissen Zeit (Schätzungsweise ein bis zwei Monaten) in den verschiedenen Chaträumen und auf den verschiedenen Servern "`bewegen"', beziehungsweise Kontakte knüpfen und Informationen sammeln. Über diese Vorarbeit erhält man Wissen über nicht offizielle und versteckte Chaträume, wie auch Aufenthalt und Commandos für sogenannte Bots\footnote{Bots sind Dienste, die sich wie reale Chatpersonen in Chaträumen aufhalten und auf eingegebenen Text reagieren (Zum Beispiel Scripte ausführen oder Dateitransfers einleiten).}. Die auf IRC gehandelten Informationen sind oft brisanter, als die auf Webseiten publizierten, da Benutzer miteinander kommunizieren können, ohne dass sie ihre IP-Adressen preisgeben müssen\footnote{IRC Server versenden die Nachrichten an die bei ihnen angemeldeten Clients.}.
+
+Die Suche nach Informationen in verschiedenen Newsgroups wäre ebenfalls eine Alternative, benötigt aber Erfahrungen bezüglich der Qualität der einzelnen Gruppen.
+
+Das Anmelden bei Mailinglisten zu den entpsrechenden Themen könnte sich auch als hilfreich erweisen bei der Suche nach Exploits, kann sich aber durch das Verarbeiten von ganzen Mailfluten als sehr zeitaufwendig entpuppen.
+\section{Fazit der Exploit-Suche}\index{Evaluation!Exploit!Fazit}
+Die Suche nach einem Exploit, der für eine spezifische Systemkonfiguration geschrieben wurde, ist sehr aufwendig. Es gibt verschiedene Variablen der Systemkonfiguration, die mit dem Exploit übereinstimmen müssen. Dazu gehören die Version des Betriebssystems (oft auch die Version des Kernels) und die Version des anzugreifenden Dienstes. Beim \emph{Apache Server} sind auch die Versionen der installierten Module relevant. Bei einem Angriff auf den \emph{Apache Server}\index{Apache Server} gibt dies bereits mindestens vier Variablen die mit dem Exploit übereinstimmen müssen. Falls nur eine Handvoll Exploits für den Apache gefunden werden, ist es unwahrscheinlich, dass einer der Exploits funktioniert.
+Zudem ist der Sourcecode von gefundenen Exploits meistens von sehr schlechter Qualität. Unter schlechter Qualität wird folgendes verstanden:\index{Exploit!Qualität}
+\begin{itemize}
+\item Schlecht bis gar nicht kommentiert (geschweige den Dokumentiert) 
+\item kaum aussagekräftige Fehlermeldungen oder gar keine Fehlermeldungen implementiert
+\item fehlerhafter Code (Typendeklaration falsch, Methodenaufrufe mit falscher Anzahl Argumenten, usw.)
+\item Variablen- und Methodennamen nicht in Englisch (gefunden wurden Scripte in Spanisch)
+\end{itemize}
+Dies hat verschiedene Gründe: Der Code war nicht für die Weitergabe gedacht, nur für den Eigenbedarfentwickelt und/oder Codeteile wurden zusammenkopiert aus "`in the wild"' entdeckten, bösartigen Programmen (z.B. aus einem Wurm).
+Um ein gefundenes Script benutzen zu können, sind oft folgende Massnahmen erforderlich:
+\begin{itemize}
+	\item Fehler finden und korrigieren
+	\item Programmlogik genau analysieren und gegebenfalls anpassen
+	\item in Machinencode integrierter Payload (Siehe Abschnitt \ref{sec:BufferoverflowAttacke} "`Bufferoverlow Attacke"') für das anzugreifende System selber schreiben, kompilieren und in das Script einfügen, damit die Betriebssystemversion sicher stimmt.
+\end{itemize}
+Es folgt ein Auszug aus der Datei \verb~apache-scalp.c~ mit einem Kommentar der Entwickler zur Illustration des Aufwandes die mit einem funktionierenden Exploit-Script verbunden sind.
+\begin{verbatim}
+ * The "experts" have already concurred that this bug...
+ *      -       Can not be exploited on 32-bit *nix variants
+ *      -       Is only exploitable on win32 platforms
+ *      -       Is only exploitable on certain 64-bit systems
+ *
+ * However, contrary to what ISS would have you believe, we have
+ * successfully exploited this hole on the following operating systems:
+ *
+ *      Sun Solaris 6-8 (sparc/x86)
+ *      FreeBSD 4.3-4.5 (x86)
+ *      OpenBSD 2.6-3.1 (x86)
+ *      Linux (GNU) 2.4 (x86)
+ *
+ * Don't get discouraged too quickly in your own research. It took us
+ * close to two months to be able to exploit each of the above operating
+ * systems. There is a peculiarity to be found for each operating system 
+ * that makes the exploitation possible.
+\end{verbatim}
+Dieser Kommentar sagt nicht nur aus, dass es Monate dauern kann bis ein spezieller Exploit funktioniert, sondern sich Sicherheitsexperten oft selber nicht einig sind, für welche Systeme ein Exploit jetzt funktioniert oder nicht.
+Es scheint schwieriger zu sein für ein konkretes System einen funktionierenden Exploit zu finden, als mit einem Exploit-Script auf dem ganzen Internet ein angreifbares System.
+\section{Entscheid}\index{Evaluation!Entscheid!Attacken}
+Die Exploit-Suche zeigte sich trotz verschiedenen Ansätzen und Nachforschungen ohne Erfolg. Da ein solcher Exploit die Basis für die Übung mit PitBull darstellte, wurde der Übungsablauf überarbeit. Der neue Übungsablauf war nun, die Hardening Theorie anzuwenden und nicht mehr drei verschieden Server zu vergleichen (Siehe \ref{sec:UebungVariante2} auf Seite \pageref{sec:UebungVariante2}). 

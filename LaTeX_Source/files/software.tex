@@ -1,0 +1,165 @@
+\chapter{Software}
+\label{cha:Software}
+\index{Software}
+In diesem Kapitel wird der theoretische Hintergrund von Einstelleungen und Optionen von den Softwareprodukten erläutert, die für den Versuch benötigt werden. Dabei werden nur die Optionen erklärt, denen eine besondere Bedeutung im Zusammenhang mit den Übungen zukommt.
+%----------
+\section{PitBull}
+\label{sec:PitBull}
+\index{PitBull}
+PitBull eine Software von der Firma Argus Systems Group ermöglicht eine zusätzliche Sicherung des Systems. Herausragendster Vorteil der zusätzlichen Sicherung eines Systems durch PitBull ist der Schutz vor Sicherheitslöchern in installierten Softwarekomponenten. Zum Beispiel würde sie, wenn der Angreifer mit einer Bufferoverlow Attacke die Rechte des angegriffenen Dienstes erhält verhindern, dass er weiter ins System eindringen kann.
+
+In den Übungsaufgaben kommt PitBull nicht zum Einsatz, da in der zur Verfügung stehenden Zeit nicht genügend aussagekräftige Beispiele zur Demonstration der Eigenheiten eines mit PitBull gesicherten Systems gefunden werden konnten. Mehr zu diesem Entscheid ist im Anhang \ref{cha:EvaluationDesUebungsablaufs} "`Evaluation des Übungsablaufs"' auf Seite \pageref{cha:EvaluationDesUebungsablaufs} zu lesen.
+%----------
+\section{Rlogin}
+\index{rlogin@\texttt{rlogin}}
+\label{sec:rlogin}
+Mit rlogin ist es möglich sich bei einem System anzumelden (ähnlich wie mit telnet). Dazu ist es notwendig, dass auf dem System der Dienst rlogind gestartet wurde. Die Syntax für den Befehl lautet:\\ \verb~rlogin -l {Benutzername} {Hostname oder IP-Adresse}~\\Befindet sich auf dem System, auf welchem der Dienst gestartet im Verzeichnis eines Benutzers eine Datei namens \verb~.rhosts~, so kann sich dieser Benutzer von den Systemen, die in dieser Datei eingetragen sind ohne Passwort anmelden. Möglicher Inhalt der Datei \verb~.rhosts~:
+\begin{verbatim}
+					192.168.0.1 master
+					192.168.0.3 master
+\end{verbatim}
+Befindet sich diese Datei im \verb~home~-Verzeichnis des Benutzers \verb~master~ kann dieser Benutzer von den IP-Adressen 192.168.0.1 und 192.168.0.3 ohne Passwort auf das System zugreifen.
+Das Deaktivieren oder Aktivieren dieses Dienstes geschieht unter Red Hat durch Editieren der Datei \verb~\etc\xinetd.d\rlogin~. Dies ist ein Beispiel für den Inhalt der Datei:
+\begin{verbatim}
+# default: on
+# description: rlogind is the server for the rlogin(1) program. \
+# The server \
+# provides a remote login facility with authentication based on \
+# privileged port numbers from trusted hosts.
+service login
+{
+	socket_type		= stream
+	wait			= no
+	user			= root
+	log_on_success		+= USERID
+	log_on_failure 		+= USERID
+	server			= /usr/sbin/in.rlogind
+	disable			= no 
+}
+\end{verbatim}
+In der abgebildeten Konfigurationsdatei ist der \verb~rlogin~-Dienst eingeschaltet. Dies ist zu sehen an der Zeile \verb~disabled=no~. Wird die Zeile durch den Eintrag \verb~disabled=yes~ ersetzt, ist der Dienst ausgeschaltet.
+%-----------
+\section{Arp}
+\index{arp@\texttt{arp}}
+\label{sec:arp}
+Der Befehl \verb~arp~ erlaubt es den Arp-Cache anzuzeigen oder zu konfigurieren. Mit dem Parameter -a kann der Arp-Cache angezeigt werden. Mit der Syntax\\ \verb~arp -s {IP-Adresse} {MAC-Adresse}~\\ kann für eine IP-Adresse eine statische MAC-Adresse gesetzt werden. Dies ist eine Möglichkeit, um zu verhindern, dass dem System eine falsche MAC-Adresse untergeschoben wird.
+%-----------
+\section{Finger}
+\index{finger@\texttt{finger}}
+\label{sec:finger}
+Über den Befehl \verb~finger~ können Informationen über die Benutzer eines Systems abgefragt werden, falls auf dem System der entsprechende Dienst gestartet wurde. Um die momentan an einem System angemeldeten Benutzer anzuzeigen benutzt man den Befehl mit der Syntax \verb~finger @{Hostname oder IP-Adresse}~. Um Detailinformationen über einen Benutzer des Systems zu erhalten kann vor dem @-Zeichen der Benutzer angegeben werden.
+Die Deaktivierung oder Aktivierung dieses Dienstes erfolgt analog zum Dienst \verb~rlogin~ aus dem Abschnitt \ref{sec:rlogin}. Die Konfigurationsdatei des \verb~finger~-Dienstes lautet \verb~\etc\xinetd.d\finger~. Ist der Dienst aktiviert sieht sie folgendermassen aus:
+\begin{verbatim}
+# default: on
+# description: The finger server answers finger requests. Finger is \
+#	a protocol that allows remote users to see information such \
+#	as login name and last login time for local users.
+service finger
+{
+	socket_type	= stream
+	wait		= no
+	user		= nobody
+	server		= /usr/sbin/in.fingerd
+	disable		= no
+}
+\end{verbatim}
+%----------
+\section{VMware}
+\label{sec:Vmware}
+In diesem Kapitel geht es um ausgewählte Themen zur Benutzung und Installation eines VMware Systems. Im Besonderen werden die Themen genauer erläutert, die im Ramen des Einrichtens der Übungsumgebung besonderer Aufmerksamkeit bedürfen. Eine konkrete Anleitung zur Installation ist im Kapitel \ref{cha:Installation} auf Seite \pageref{cha:Installation} zu finden.
+\subsection{Begriffe}
+\label{sub:Begriffe}
+Im Folgenden wird der Begriff \emph{VMware Host} oder \emph{Host System} verwendet werden. Damit wird das System bezeichnet auf welchem VMware installiert wird (Im Ramen dieser Arbeit ist dies ein Linux System mit Red Hat 7.3).
+
+Unter dem \emph{virtuellen System} (auch \emph{Virtual Machine}) wird das System verstanden, das innerhalb der VMware Umgebung läuft. Dem virtuellen System werden Hardwarekomponenten vorgespielt. Die VMware Umgebung leitet die Anfragen auf diese simulierten Hardwarekomponenten weiter auf reale Hardwarekomponenten des Host Systems. Es gibt verschiedene Möglichkeiten das Betriebssystem für das virtuelle System aufzusetzen. Entweder es existiert bereits eine reale Harddisk mit einem bereits vollfunktionsfähigen Betriebssystem oder es wird von VMware eine virtuelle Disk erzeugt, auf die, nach dem Booten des virtuellen Systems das gewünschte Betriebssystem installiert werden kann (Option \emph{virtual disk}). Im ersten Fall ist nur der Ort an dem sich das bereits lauffähige Betriebssystem befindet anzugeben.
+Vollständigkeitshalber sollte hier erwähnt werden, dass es noch eine weitere Möglichkeit gibt ein virtuelles System mit einem Betriebssystem auszurüsten. Die Firma VMware stellt sogenannte VMware Guest OS Kit's zur Verfügung, dies sind für VMware vorkonfigurierte Betriebssysteme.
+\subsection{Diskmodi von Virtuellen Disks}
+\label{subsec:Diskmodi}
+\index{Diskmodi}
+\index{Virtual Disk}
+Einem virtuellen System kann Speicherplatz in Form von virtuellen Disks zugeordnet werden. Für diese Disks existieren drei verschiedene Modi: \emph{Persistent},\emph{Undoable} und \emph{Nonpersistent}. Diese Modi bestimmen, wie die Daten der Disks gespeichert werden. Einem virtuellen System können mehrere virtuelle Disks zur Verfügung gestellt werden.
+\subsubsection{Persistent}
+\index{persistent}
+Die virtuelle Disk verhält sich wie eine physische Harddisk: Daten werden nachdem sie geändert wurden sofort gespeichert. Der Zustand der Disks bleibt nach einem Neustart des virtuellen Systems erhalten.
+\subsubsection{Undoable}
+\index{undoable}
+Änderungen auf der virtuellen Disk werden in einer Datei (mit der Namenserweiterung \verb~.REDO~)  protokolliert und können beim Herunterfahren des virtuellen Systems rückgängig oder definitiv gemacht werden.
+\subsubsection{Nonpersistent}
+\index{nonpersistent}
+Die Datei der virtuellen Disk wird nur gelesen. Änderungen der Daten werden wie bei \emph{undoable} protokolliert. Die Änderungen auf der virtuellen Disk werden beim Herunterfahren automatisch rückgängig gemacht. 
+\subsection{Duplizieren eines virtuellen Systems}
+\label{DuplizierenEinesVirtuellenSystems}
+\index{Virtuelles System!duplizieren}
+\index{Virtual Disk!kopieren}
+Hier wird davon ausgegangen, dass beim Erstellen des virtuellen Systems mit der Option \emph{virtual disk} gearbeitet wurde (Abschnitt \ref{sub:Begriffe} auf Seite \pageref{sub:Begriffe}).
+Für jedes virtuelle System wird ein eigenes Verzeichnis erstellt. In diesem Verzeichnis befinden sich alle relevanten Daten. Im VMWare Handbuch \cite{VMwareManual} wird empfohlen vor dem Verändern der Dateien eines virtuellen Systems vom gesamten Verzeichnis ein Backup anzulegen. Um ein virtuelles System zu duplizieren braucht man bloss dieses Verzeichnis zu kopieren. Dazu muss das virtuelle System heruntergefahren werden. Falls zusätzliche Dateien ausserhalb des Verzeichnisses erstellt wurden, die das virtuelle System benutzt, müssen diese vom neuen Verzeichnis aus über die gleichen relativen Pfade erreichbar sein.
+Nun kann über den Menüpunkt \verb~File > Open~ die Konfigurationsdatei des kopierten virtuellen Systems geöffnet werden, womit das soeben kopierte System geladen wird. 
+
+Die Portierung eines virtuellen Systems von einem Linux Rechner auf einen Windows Rechner ist laut VMware Handbuch \cite{VMwareManual} auch möglich.
+\subsection{Netzwerkkonfiguration}
+\label{subsec:Netzwerkkonfiguration}
+\index{VMware!Netzwerkkonfiguration}
+Beim Einrichten eines neuen virtuellen Systems kann man zwischen drei verschiedenen Netzwerkintegrationen wählen: \emph{Bridged}, \emph{Host-only} oder \emph{NAT}. Bei der Wahl eines Modus ist darauf zu achten, dass bei der Installation von VMware die Frage nach der Unterstützung des entsprechenden Modus bestätigt wurde. Sobald die Netzwerkunterstützung von VMware aktiviert wird, erstellt es virtuelle Switches\index{Virtueller Switch}. Diese sind im Host System als Netzwerkkomponenten zu erkennen. Es können bis zu zehn solche Switches erzeugt werden. Einige von ihnen tragen spezielle Bezeichnungen wie \emph{Bridged} (auch VMnet0), \emph{Host-only} (auch VMnet1) oder \emph{NAT} (auch VMnet8). Diese speziellen Switches werden in den entsprechenden Netzwerkkonfigurationen verwendet.\\
+Ein virtuelles System kann an einen beliebigen, virtuellen Switch angehängt werden. An einen virtuellen Switch können auch mehrere virtuelle Systeme angehängt werden. Im Folgenden werden die verschiedenen Netzwerkintegrations Modi erklärt.
+\subsubsection{Bridged Modus}
+\label{subsubsec:BridgedModus}
+\index{Bridged Modus}
+Dieser Modus verbindet das virtuelle System mit dem LAN, an welchem das Host System angeschlossen ist. Falls das Host System über mehrere Netzwerkkarten verfügt, können für diese auch mehrere Bridges definiert werden.
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=13cm]{./files/inc/pictures/jpg/vmware_bridged.jpg}
+\end{center}
+\caption{\label{pic:bridgedmodus}Verbindung des virtuellen Systems über den Ethernetadapter des Hosts mit dem Netzwerk im Bridged Modus}
+\end{figure}
+Abbildung \ref{pic:bridgedmodus} (entnommen aus dem VMware Handbuch \cite{VMwareManual}) zeigt die Komponenten, die in diesem Modus simuliert werden und wie sie mit dem realen Host verbunden sind. Die einzige reale Komponente, die auf der Abbildung zu sehen ist, ist der Ethernetadapter des Host Systems (bezeichnet mit "`Host Ethernet adapter"'). Ein virtueller Netzwerkadapter ("`Virtual Ethernet adapter"') und ein virtueller Switch ("`Virtual Ethernet switch"') werden von VMware simuliert. Logisch ist das Host System über den virtuellen Switch mit dem virtuellen System verbunden. Diese Verbindung ist in der Abbildung mit "`Virtual bridge"' bezeichnet. Das System ist vergleichbar mit zwei realen Systemen, die an dem gleichen Switch angeschlossen sind. Andere Systeme, die mit dem Host System verbunden sind, sind logisch ebenfalls mit dem virtuellen Switch verbunden.
+Die Wahl der IP-Adressen ist unabhängig von der VMware-Umgebung. Die IP-Adressen können so gewählt werden, wie sie auch für reale Netzwerkkomponenten gewählt würden. Zum Beispiel könnte die IP-Adresse des virtuellen Systems 192.168.0.101 und die des Hostsystems 192.168.0.1 lauten, falls sich die Systeme im gleichen Subnetz befinden sollen.
+\subsubsection{Host-only Modus}
+\label{subsec:HostOnlyModus}
+\index{Host-only Modus}
+In diesem Modus simuliert das virtuelle System dem Host System ein Interface mit der Bezeichnung Host-Only (VMware Linux) oder einen Ethernet Adapter (VMware Windows). Dieser Modus wird benutzt, falls das virtuelle System keine Verbindung zu einem realen Netzwerk, mit dem das Host System möglicherweise verbunden ist, aufweisen soll.
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=13cm]{./files/inc/pictures/jpg/vmware_hostonly.jpg}
+\end{center}
+\caption{\label{pic:hostonlymodus}Im Host-only Modus simulierte Netzwerkkomponenten}
+\end{figure}
+Abbildung \ref{pic:hostonlymodus} zeigt die Komponenten, die in diesem Modus simuliert werden: Ein virtueller Netzwerkadapter ("`Virtual Ethernet adapter"'), ein virtueller Switch ("`Virtual Ethernet switch"') und ein DHCP Server. Der DHCP Server ordnet dem virtuellen System automatisch eine IP-Adresse zu. Das virtuelle System erhält keinen Zugang zum Netzwerk das mit dem Ethernetadabter des Host Systems verbunden ist, ausser es wird auf dem Host System eine entsprechende Software installiert (zum Beispiel ein Proxy Server). Ein Proxy Server könnte dann die Anfragen des virtuellen Systems, die er über den virtuellen Netzwerkadapter ("`Host-only adapter"') erhält über den realen Hostadapter des Host Systems in ein angeschlossenes Netzwerk weiterleiten. Das bedeutet auch, dass andere Rechner der gleichen Broadcastdomain wie das Host System nichts von dem Virtuellen System sehen, falls kein Proxy installiert ist.
+\subsubsection{Network Address Translation (NAT) Modus\index{NAT Modus}}
+\label{subsec:NATModus}
+Die Installation des NAT Modus ist notwendig, falls für das virtuelle System keine eigene IP-Adresse zur Verfügung steht. Falls das Host System per \emph{Wireless LAN} oder \emph{Dial-Up Verbindung} mit einem anderen Netzwerk verbunden ist, stellt der NAT Modus eine Möglichgkeit dar, wie das virtuelle System Zugriff zum Netzwerk erhalten kann, mit welchem das Host System verbunden ist. Das virtuelle System ist über die gleiche IP-Adresse wie das Host System erreichbar.
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=12.5cm]{./files/inc/pictures/jpg/vmware_nat.jpg}
+\end{center}
+\caption{\label{pic:natmodus}Verbindung des virtuellen Systems über den Ethernetadapter des Hosts mit dem Netzwerk im NAT Modus}
+\end{figure}
+In Abbildung \ref{pic:natmodus} sind die simulierten Komponenten zu sehen: Ein virtueller Netzwerkadapter ("`Virtual Ethernet adapter"'), ein virtueller Switch ("`Virtual Ethernet switch"'), ein DHCP Server und ein sogenanntes \emph{NAT Device}. Das reale Netzwerk, an dem auch das Host System angeschlossen ist, ist mit "`Network"' gekennzeichnet. Logisch ist es direkt mit dem NAT Device verbunden. Das NAT Device ermöglicht es einem realen System, das an dem gleichen Netzwerk angeschlossen ist wie das Host System, mit dem virtuellen System zu kommunizieren. Die Angabe einer Portnummer ermöglicht es dem NAT Device zu entscheiden, ob mit der Adresse das Host System oder das virtuelle System gemeint ist. Der DHCP Server ordnet dem virtuellen System, auf dem nach aussen nicht sichtbaren Netz, automatisch eine IP-Adresse zu. 
+\subsection{Tips und Tricks}
+\subsubsection{Wechseln zwischen VMwarehost und virtuellem System}
+Läuft ein virtuelles System, erhält man per \verb~Ctrl + Alt~ die Kontrolle über das Hostsystem. Diese spezielle Tastenkombination ist nötig, weil alle anderen Eingaben von der virtuellen Konsole interpretiert werden. Um wieder das virtuelle System zu steuern braucht man nur in das Fenster der VMware Applikation zu klicken.
+\subsubsection{Installation eines virtuellen RedHat Systems}
+Bei der Installation von RedHat auf einem virtuellen System ist es empfehlenswert die  Installation im textbasierten Modus durchzuführen. Die Bedienung der grafikbasierten Installation ist aus Gründen der Geschwindigkeit etwas mühsam.
+\subsubsection{Hinweis bezüglich VMware Tools Package}
+\index{VMware Tools Package}
+Beim Start des virtuellen Systems wird ein Hinweis angezeigt, dass \emph{VMware Tools} installiert werden müsse. Dies ist für die Installation von virtuellen Servern jedoch nicht notwendig, da keine speziellen Grafikfunktionen verwendet werden. \emph{VMware Tools} würde es beispielsweise ermöglichen eine höhere Auflösung als 640x480 mit 16 Farben zu verwenden.
+\subsubsection{CD Wechsel bei der Installation des virtuellen Servers}
+\index{Fehler!CD-Wechseln}
+\begin{verbatim}
+The CD-ROM drive failed to eject the disc with the error:
+Device or resource busy.
+\end{verbatim}
+Um dieses Problem zu beheben hilft es das CD-Rom Laufwerk ausserhalb von VMware zu unmounten und wieder zu mounten. Der Fehler und die Behebung konnte aber nicht repliziert werden.
+
+\subsection{Erfahrungen}
+\subsubsection{Kopieren einer Virtual Disk}
+\index{Fehler!Kopieren einer Virtual Disk}
+Das gesamte Verzeichnis eines virtuellen Systems wurde kopiert. Nach dem Starten des kopierten Systems sollte auf dem virtuellen System Pitbull isntalliert werden. Nach der Initierung des Installationsskriptes von Pitbull gab es eine Fehlermeldung begleitet von Steuerzeichen, die auf Probleme der Festplatte hinwiesen. Die Meldung wurde in der Konsole angezeigt, in welcher gerade das Installationsskript ausgeführt wurde. Da das Skript gerade auf eine Eingabe wartete ist es wahrscheinlich, dass das Betriebssystem die Meldung erzeugte und dass es ein Problem mit dem Zugriff auf den virtuellen Disk gab. Merkürdigerweise schien dieser Zugriffsfehler das VMware Hostsystem beeinträchtigt zu haben.
+
+Das Home-Verzeichnis des VMware Benutzers wies anschliessend ungültige Ver\-zeichnis- und Dateinamen auf (siehe Abbildung \ref{pic:scrambledfat}).
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=14cm]{./files/inc/pictures/jpg/scrambledfat.jpg}
+\end{center}
+\caption{\label{pic:scrambledfat}Ausgabe des ls-Commandos mit defekten Dateieinträgen}
+\end{figure}
+Das System war immer noch funktionstüchtig. Die erstellten Dateien haben keinerlei Inhalt und können ohne Beeinträchtigung des Systems gelöscht werden.

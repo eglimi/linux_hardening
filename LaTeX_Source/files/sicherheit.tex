@@ -1,0 +1,63 @@
+\chapter{Sicherheit}
+\index{Sicherheit}
+\label{cha:Sicherheit}
+
+%----------
+\section{Was ist Sicherheit}
+\label{sec:WasIstSicherheit}
+Sicherheit hat sehr viele Aspekte\index{Sicherheit!Aspekte}. Diese können grundsätzlich in drei, für diese Arbeit relevanten, Hauptkategorien unterteilt werden:
+\begin{itemize}
+	\item	Schutz der Vertraulichkeit der Daten\index{Vertraulichkeit} (Data confidentiality)
+	\item	Datenintegrität\index{Datenintegrität} (Data integrity)
+	\item	Verfügbarkeit des Systems\index{Verfügbarkeit} (System availability)
+	\end{itemize}
+Der erste Punkt, Schutz der Daten, umfasst den Bereich der persönlichen Daten. Das System soll gewährleisten können, dass diese Daten geheim bleiben und nur den vom Besitzer festgelegten Personen zugänglich sind. 
+
+Unter Datenintegrität versteht man, dass Daten nur von berechtigten Benutzern verändert werden können bzw. detektiert werden kann, von wem die Änderungen vorgenommen wurden. Verändern heisst dabei auch löschen oder hinzufügen von falschen Daten.
+
+Die Verfügbarkeit eines Systems ist ein sehr wichtiger Punkt im Bereich der Sicherheit. Es geht darum, dass niemand das System so stören kann, dass es unbenutzbar wird. Ein Stichwort hierbei ist \glqq denial of service\grqq \index{Denial of Service}. Personen die diese Attacken durchführen versuchen ein System so stark auszulasten, dass die bereitgestellten Dienste nicht mehr genutzt werden können.
+
+Natürlich ist jedes einzelne der oben genannten Gebiete für sich sehr viel komplexer zu verstehen als hier angedeutet. Am technisch schwierigsten zu bekämpfen sind die denial-of-service Attacken. Für die beiden anderen Punkte gibt es bereits gute Lösungen.
+
+Ein weiterer Aspekt, der immer zu heftigen Diskussionen führt, ist die Privatsphäre\index{Privatsphäre}. Ein System soll die Person, die es benutzt, davor schützen, dass private Informationen über die Person selbst für Dritte einsehbar sind. Das führt schnell zu einer Diskussion über Moral bzw. zu der Frage nach der Legalität. Soll z.B. ein Staat ein Dossier über Computerbenutzer führen dürfen, die sie zur Bekämpfung von Internetkriminalität verwenden? Solche Themen sind sehr spannend, sollen aber nicht im Rahmen dieser Arbeit behandelt werden.
+
+%----------
+\section{Warum Sicherheit}
+\label{sec:WarumSicherheit}
+Die meisten Benutzer des Internets beachten das Gesetz. Das heisst sie versuchen nicht, andere zu schädigen. Leider sind offensichtlich nicht alle Benutzer so. Für sie gibt es einen englischen Begriff: \glqq intruders\grqq\ \index{intruder|see{Eindringlinge}}(Eindringlinge)\index{Eindringlinge} oder manchmal auch \glqq adversaries\grqq\ (Gegner). Diese Personen können grundsätzlich in zwei Kategorien eingeteilt werden. Passive Eindringlinge\index{Eindringlinge!Passive} möchten nur Daten lesen, für die sie keine Berechtigung haben. Aktive Eindringlinge\index{Eindringlinge!Aktive} möchten diese Daten auch ändern und sind somit eine grössere Gefahr. Zudem kann noch zwischen Attacken die auf ein Ziel gerichtet sind (targeted) und Attacken die ein zufälliges Ziel aussuchen (opportunistic) unterschieden werden.
+
+Natürlich gibt es nicht nur Personen, die Schaden anrichten, sondern noch andere Arten von Gefahren. Dies kann ein Wurm \index{Würmer} (worms), ein Virus \index{Virus} oder ein Trojanisches Pferd \index{Trojanische Pferde} (trojan horse) sein. All das sind kleine Programme mit dem Ziel, Schaden auf einem Rechner anzurichten. Dabei ist es in den meisten Fällen für den Programmierer nicht entscheidend wo der Schaden entsteht. Es sind also zufällige Ziele. 
+
+Die Kosten die durch Viren\index{Viren!Kosten} verursacht werden sind beträchtlich. Sie werden für das Jahr 2000 auf \$$1.6*10^{12}$ geschätzt \footnote{Schätzung von PricewaterhouseCoopers, 2000}. 
+
+Zusätzliche Informationen und Berichte zu den Auswirkungen gibt es auf der Webseite von Securitystats \cite{secstats}. Einen Guten Überblick und eine Einführung in das Thema Sicherheit bietet auch das Buch von Andrew. S. Tanenbaum \cite{Tanenbaum}.
+
+%----------
+\section{Wie sicher ist sicher?}
+\label{sec:WieSicherIstSicher}
+Eines muss schon zu Beginn klargestellt werden: Ein System ist und kann niemals vollkommen sicher sein. Es kann aber einem potenziellen Angreifer möglichst schwierig gemacht werden, in das System einzudringen.
+
+Ein weiterer Punkt den es zu beachten gilt ist, dass ein System zwar sehr sicher gemacht werden kann, unter Umständen dadurch aber die Möglichkeiten des Systems eingeschränkt werden. Zum Beispiel kann ein Server ohne Netzwerkverbindung laufen, dadurch wird er aber nahezu unbrauchbar. Somit ist es immer ein Balanceakt zwischen Sicherheit und Flexibilität bzw. Brauchbarkeit. Man sollte sich also immer überlegen, für was das System eingesetzt werden soll. Weiter muss entschieden werden, wie wichtig die Daten sind, die zu schützen sind bzw. wie gross der Schaden ist, falls die Daten verloren gehen oder gestohlen werden. Ebenso wichtig ist es zu entscheiden, wem man vertraut und Zugriff auf das System gewährt. Diese Entscheide bestimmen den Grad der Sicherheit nach denen ein Sicherheitsplan erstellt werden sollte.
+
+%----------
+\section{Was kann sicher gemacht werden?}
+\label{sec:WasKannSicherGemachtWerden}
+Technisch gesehen gibt es auf einem System verschiedene Stufen, auf denen das System sicherer Gemacht werden kann. Eine sehr ausführliche Erklärung dazu kann im Linux Security-HOWTO \cite{secHowto} gefunden werden. Hier aber dennoch ein Überblick über die verschiedenen Stufen. Auf gewisse Punkte wird in dieser Arbeit in den folgenden Kapiteln genauer eingegangen.
+\begin{itemize}
+	\item	Physical Security (physikalische Sicherheit)
+	\item	Local Securtiy (lokale Sicherheit)
+	\item	Files and File system Securtiy (Datei- und Dateisysteme schützen)
+	\item	Password Securtiy and Encryption (Passwörter und Verschlüsselung)
+	\item	Kernel Securtiy
+	\item	Network Security (Netzwerksicherheit)
+\end{itemize}
+Dies ist eine technische Unterteilung. Auf Bereiche wie \glqq Social Engineering\grqq \index{Social Engineering} oder \glqq Security Awareness\grqq \index{Security Awareness} wird hier nicht eingegangen.
+
+%----------
+\section{Probleme}
+\label{sec:Probleme}
+Das Hauptproblem im Bereich der Sicherheit ist, wie oben schon angesprochen, dass ein System niemals sicher sein kann. Der Grund sind fehlerhafte Applikationen. Dass Applikationen Fehler aufweisen lässt sich aus verschiedenen Gründen nicht vermeiden, z.T. wegen des Zeitdruckes (\glqq time-to-market\grqq) oder auch wegen der wachsenden Komplexität der Programme. Das Einzige was dagegen gemacht werden kann, ist, sobald ein Fehler entdeckt wurde, ihn zu beheben und sofort einen Patch für die Kunden bzw. Benutzer des Programms bereitzustellen. Der Nachteil darin ist, dass der Patch erst gemacht werden kann, wenn das Sicherheitsproblem erkannt wurde (oft durch eine Attacke). Das gleiche gilt für Applikationen, die das System schützen sollen (z.B. ein Virenschutz). Diese Applikationen schützen das System nur vor bekannten Angriffen. Diese Systeme werden reagierende System (reactive Systems)\index{reagierende Systeme} genannt. Das heisst, sie können nur reagieren, was bedeutet, dass der Angreifer bereits in das System eingedrungen ist. Es gibt aber auch einen Ansatz der versucht, Attacken zu erkennen, bevor jemand ins System eindringen kann. Diese werden agierende System (proactive Systems) (Agierende Systeme)\index{agierende Systeme} genannt. Sie versuchen gewisse Muster, die auf eine Attacke hinweisen, zu erkennen. Wie immer ist agieren die bessere Lösung als reagieren, aber sehr viel schwieriger zu realisieren.
+
+In den folgenden Kapiteln werden verschiedene Ansätze zur Verhinderung von Attacken aufgezeigt und genauer erklären.
+
+

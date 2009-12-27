@@ -1,0 +1,20 @@
+\begin{longtable}{|l|X|X|X|X|}
+\caption[Installation der Server]
+{\label{tab:Serverinstallationen1} Varianten der Serverinstallationen für die Übung}\\
+\hline
+	\textbf{Kategorie} & \textbf{Attacke} & \textbf{Server 1} & \textbf{Server 2} & \textbf{Server 3}\\
+	\hline
+	\hline
+		&Passwörter cracken &shadow Passwort ausgeschaltet & shadow Passwort eingeschaltet	& \multirow{6}{35mm}{Auf diesem Server ist PitBull installiert. Sonst entspricht die Installation derjenigen von Server 1.} \\
+	\cline{2-4}
+	OS &ARP-Attacke 		& default Einstellungen 		& statisches ARP Cache, log Einträge, arpwatch & \\
+	\cline{2-4}
+	&Trojanisches Pferd & - & Einschränkungen des Benutzers, Ausführbarkeit im System einschränken & \\	
+	\cline{1-4}
+	Applikation &Attacke gegen ssh1 & ssh als Dienst verwenden und Erklärungen dazu machen& ssh1 updaten auf ssh2, oder sicher konfigurieren & \\
+	\cline{2-4}
+		& ftp (buffer overflow) & default Einstellungen & ftp Dienst sicherer konfigurieren & \\
+	\cline{2-4}
+	&Analysetools & Ungenutzte Dienste aktiviert (Bsp. Finger) & Ungenutzte Dienste deaktivieren &\\
+	\hline
+\end{longtable}

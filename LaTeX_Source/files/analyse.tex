@@ -1,0 +1,67 @@
+\chapter{Evaluation des Übungsablaufs\index{Evaluation!Übungsablauf}}
+\label{cha:EvaluationDesUebungsablaufs}
+\section{Idee}
+Das Prinzip des Härtens soll dem Student anhand eines direkten Vergleichs der Eigenschaften und des Verhaltens eines gehärteten und eines nicht gehärteten Servers gezeigt werden. Um verschiedene Ansätze des Härtens zu zeigen wird ein weiterer Vergleich mit einem Server durchgeführt, der mit \emph{Argus Pitbull} gesichert wurde.
+Es werden drei Server mit verschiedenen Konfigurationen verglichen:
+\begin{itemize}
+	\item Ein Standard Server ohne speziell angepasste Konfiguration
+	\item Ein manuell gehärteter Server
+	\item Ein Server auf dem Argus Pitbull installiert wurde
+\end{itemize}
+\section{Übung Variante 1}
+\index{Evaluation!Übungsvariante 1}
+\subsection{Uebungsaufbau}
+\label{sub:Uebungsaufbau1}
+In einer ersten Variante waren verschiedene Attacken geplant, um die Auswirkungen der unterschiedlichen Konfigurationen der Server zu zeigen. 
+\begin{sidewaystable}[H]
+\LTXtable{\textheight}{./files/inc/tables/serverinstallation1}
+\end{sidewaystable}
+In der Tabelle \ref{tab:Serverinstallationen1} sind die, für die einzelnen Server typischen Konfigurationsdetails aufgelistet. In der ersten Spalte ist die Kategorie, beziehungsweise der speziell zu härtende Bereich aufgeführt. Die Kategorie "`OS"' bezeichnet Sicherheitsaspekte, die mit Betriebssystemeinstellungen zu tun haben. Die Kategorie "`Applikation"' umfasst Sicherheitsaspekte gewisser Dienste oder den Einsatz von Analysetools zur Gewinnung von Informationen über ein System. Die Spalte "`Attacken"' sind mögliche Angriffe auf einen der Server 1 bis 3, um die Auswirkungen der unterschiedlichen Konfigurationen zu demonstrieren.
+
+Für den Übungsablauf waren verschiedene Varianten denkbar. Im Folgenden werden die Varianten beschrieben und die Gründe, warum welche Variante gewählt wurde, erläutert.
+\subsection{Übungsverlauf Variante 1}
+\label{sub:UebungsverlaufVariante1}
+Auf einem Rechner werden innerhalb der VMware Umgebung drei Server simuliert. Die Studenten versuchen mittels Tools und bekannten Sicherheitsschwächen Unterschiede der Zustände und Konfigurationen herauszufinden.
+\subsection{Übungsverlauf Variante 2}
+\label{sub:UebungsverlaufVariante2}
+Die Klasse wird in Gruppen zu jeweils vier Studenten aufgeteilt. Jede Gruppe arbeitet an zwei Computern. Zwei der Studenten (hier als Gruppe A bezeichnet) werden sich in einem ersten Durchgang mit dem Härten eines Servers befassen. Die anderen zwei Studenten (hier als Gruppe B bezeichnet) machen sich mit möglichen Angriffen vertraut. Anschliessend wird Gruppe B Angriffe auf den nicht gehärteten, den gehärteten, wie auch den mit Pitbull gesicherten Server durchführen. Gruppe A wird die Auswirkungen der Angriffe überprüfen.
+
+Wie in Abbiludng \ref{tab:gruppenaufteilung} zu sehen ist werden die Phasen 1 und 2 werden zweimal durchgeführt. Wobei im zweiten Durchgang die Gruppen ihre Rollen tauschen. Damit die Gruppen im zweiten Durchgang neue Aktionen durchführen können, ist der Fokus der Durchgänge auf verschiedene Themen des Härtens gerichtet. Im dargestellten Beispielablauf wurden die Themen \emph{OS Hardening} und \emph{Application Hardening} gewählt.
+\pagebreak
+\LTXtable{\linewidth}{./files/inc/tables/gruppenaufteilung}
+\subsection{Entscheid}\index{Evaluation!Entscheid!Übung}
+Variante 2 ist vom Lernaspekt und der technischen Realisierung her der Variante 1 vorzuziehen.
+Sie bietet sowohl die Möglichkeit das Prinzip des Härtens aus der Sicht eines Administrators zu sehen, als auch deren Auswirkungen aus der Sicht eines Angreifers.
+Zusammengefasst bietet Variante 2 folgende Qualitäten und Vorteile gegenüber Variante 1:
+\begin{itemize}
+\item Gruppendynamik durch Interaktion einer Zweiergruppe mit einer anderen Zweiergruppe
+\item Ansporn durch eine Gruppe als "`Gegenspieler"'
+\item Keine Serverüberlastung, da jede Vierergruppe nur mit zwei Computern interagiert
+\item Auswirkungen der einzelnen Attacken können besser überwacht werden, da jede Zweiergruppe ein anderes System angreift
+\item Auswirkungen des Härtens eines Systems sind konkreter ersichtlich
+\end{itemize}
+%-------------
+\section{Übung Variante 2}
+\label{sec:UebungVariante2}
+\index{Evaluation!Übungsvariante 2}
+\subsection{Übungsaufbau}
+\label{sub:Uebungsaufbau2}
+\LTXtable{\linewidth}{./files/inc/tables/serverinstallation2}
+\subsection{Übungsverlauf}
+\label{sub:Uebungsverlauf}
+Die Übung kann einzelnen oder zu zweit durchgeführt werden. Im Wesentlichen geht es darum, Dienste und Betriebssystemeinstellungen zu konfigurieren. Dabei werden die Aufgaben aus dem Kapitel \ref{cha:Uebungen} auf Seite \pageref{cha:Uebungen} durchgearbeitet. In Abbildung \ref{pic:uebungsumgebung2} ist die Übungsumgebung dargestellt. Während der Übung wird Server 1 konfiguriert.
+Um die Einstellungen zu vergleichen, können beide virtuellen Systeme (Server 1 und 2) nebeneinander in zwei VMware Instanzen ausgeführt werden. Durch das Aufrufen der Dienste des Server 1 vom Server 2 aus können die Konfigurationen überprüft werden. Falls zu zweit gearbeitet wird, kann auch von einem Rechner auf den anderen eine Verbindung hergestellt werden, um zum Beispiel das passwortfreie Einloggen mittels \verb~rlogin~ auszuprobieren. Grundsätzlich gibt es viel Spielraum in den Übungsaufgaben bezüglich dem Testen der Konfigurationen. Dies soll die Experimentierfreude anspornen und somit den Lerneffekt erhöhen.
+\begin{figure}[H]
+	\begin{center}
+		\includegraphics[width=10cm]{./files/inc/pictures/pdf/uebungsuebersicht}
+		\caption{\label{pic:uebungsumgebung2}Uebungsumgebung}
+	\end{center}
+\end{figure}
+
+\section{Entscheid}
+\index{Evaluation!Entscheid!Übung}
+Die Übungsvariante 1 ist davon abhängig, wieviele erfolgreiche Attacken inszeniert werden können. Solche funktionierenden Attacken für ein bestimmtes System zu finden ist sehr aufwendig. Attacken selber zu programmieren überstieg das zur Verfügung stehende Zeitbudget bei weitem (siehe Anhang \ref{cha:EvaluationEinerAttacke} auf Seite \pageref{cha:EvaluationEinerAttacke}).
+Die Übungsvariante 2 bietet wie Variante 1 die Möglichkeit Techniken des Härtens anzuwenden. Anstatt Attacken werden nun nicht deaktivierte, sicherheitskritische Dienste zum Aufzeigen von Systemschwächen genutzt. 
+ 
+
+

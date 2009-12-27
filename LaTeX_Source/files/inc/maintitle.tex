@@ -1,0 +1,51 @@
+%titelseite erstellen
+\begingroup
+	\renewcommand{\thepage}{title}
+	\begin{titlepage}
+		\vspace*{10mm} 
+				\begin{center}
+					\includegraphics[width=12cm]{./files/inc/pictures/jpg/hslogo250pix} \vspace{15mm}\\
+				\end{center}
+				\begin{center}
+					Erstellt am \today
+				\end{center}
+
+			\vspace*{50mm}
+			%\noindent
+			{\large \textbf{
+				\hspace*{15mm} \\
+				\hspace*{15mm} 	Von: \vspace{5mm} \\
+				\hspace*{15mm} 	\href{mailto:rene.hermann@hsr.ch}{René Herrmann} $<$rene.hermann@hsr.ch$>$ \\
+				\hspace*{15mm} 	\href{mailto:michael.egli@hsr.ch}{Michael Egli} $<$michael.egli@hsr.ch$>$ 										\vspace{10mm}\\
+				\hspace*{15mm}	Betreuer: Prof. Dr. P. Heinzmann, M. Liebi}} \\ 
+	\newpage
+	
+%	\renewcommand{\thepage}{dedication}
+%	\thispagestyle{empty}
+%		\begin{center}	
+%			\vspace*{20mm}
+%			{\large \textit{für alle die wir kennen}}
+%		\end{center}
+%	\newpage
+	
+	\renewcommand{\thepage}{hsr}
+	\thispagestyle{empty}
+		\noindent
+		Diese Arbeit wurde an der Hochschule Rapperswil, Abteilung Informatik durchgeführt.
+			
+			\begin{figure}[H]
+				\begin{center}
+					\includegraphics[width=5cm]{./files/inc/pictures/pdf/HSR} \vspace{5mm}\\
+					\url{http://www.hsr.ch}
+				\end{center}
+			\end{figure}
+			
+		\vspace*{100mm}
+		\noindent
+		{\small
+			Das Dokument und dessen Inhalt ist Eigentum der Hochschule Rapperswil, Schweiz.\\
+			\copyright  2002 Hochschule Rapperswil\\
+		Typeset by \LaTeX\ }
+	\end{titlepage}
+\endgroup
+

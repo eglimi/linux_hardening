@@ -1,0 +1,107 @@
+\chapter{Installation der Übungsumgebung\index{Installation der Übungsumgebung}}
+\label{cha:Installation}
+Das folgende Kapitel beschreibt, wie die Übungsumgebung aufgebaut werden kann. Die schnellste Methode um eine lauffähige Übungsumgebung zu erhalten ist, das Installieren der Software VMware und dem Kopieren und Starten der virtuellen Disks (siehe "`Dublizieren eines virtuellen Systems"' in Abschnitt \ref{DuplizierenEinesVirtuellenSystems} auf Seite \pageref{DuplizierenEinesVirtuellenSystems}). Auf den beiliegenden CDs befinden sich die Dateien der virtuellen Disks der Server 1 und 2 (siehe Anhang \ref{cha:BeiliegendeCds}).
+%----------
+\section{VMware Hostsystem\index{Installation der Übungsumgebung!VMware Hostsytem}}
+\label{sec:VmwareHostsystem}
+\index{Hostsystem}
+Das VMware Hostsystem, ist das System auf dem VMware gestartet wird. Für die Installation des VMware Hostsystems wurde Red Hat 7.3 verwendet\footnote{Da die Software VMware auch für das Betriebssystem Windows erhältlich ist, könnte für das VMware Hostsystem der Übungsumgebung auch ein System mit Windows benutzt werden.}. Es wurde eine Standard Installation eines Desktop-Systems mit Netzwerkzugang durchgeführt. Für die graphische Oberfläche wurde X-Windows mit dem Window Manager KDE, in den Versionen die mit diesem Release mitgeliefert werden installiert. Während der Installation wurden folgende Einstellungen in der angegebenen Reihenfolge vorgenommen. Bei nicht angegebenen Optionen wurde die Standardeinstellung beibehalten.
+\begin{itemize}
+\item textbasierte Installation durch die Eingabe von \verb~text~ wählen
+\item Sprache für den Installationsvorgang: Deutsch
+\item Tastaturtyp: sg-latin1
+\item Maustyp: Microsoft IntelliMouse (PS/2), ohne die Drei-Tastentyp-Emulation
+\item \textbf{Installationstyp: Desktop}
+\item Für die Partionierung wurde der \emph{Disk Druid} gewählt.
+\item Initialisierung und Löschen des Disks bestätigen (es handelt sich hierbei, um die virtuelle Harddisk)
+\item \textbf{Partitionen: 47MB (ext3) /boot ,604 MB (swap), / (ext3) 5498MB}\index{Installation der Übungsumgebung!partitionieren} (hier kann die Grösse auf 1 MB eingestellt und die Option "`Den gesamten verfügbaren Platz ausfüllen"' selektiert werden.
+\item Bootloader GRUB auswählen
+\item Bootloader im Masterboot record installieren lassen
+\item Keine speziellen Boot-Optionen eintragen
+\item kein GRUB Passwort verwenden
+\item Die Optionen "`bootp"'und "`dhcp"' deaktivieren, IP-Adresse \textbf{(z.B. 192.168.0.2)} und Netzmaske (z.B. 255.255.255.0) eintragen\footnote{Falls das Hostsystem mit den Virtuellen Servern kommunizieren möchte, muss seine IP-Adresse aus dem gleichen Subnetz, wie die IP-Adresse des virtuellen Servers(siehe Abschnitt \ref{sec:VirtuellesSystem} "`Virtuelles System"') stammen. Ansonsten kann die IP-Adresse frei gewählt werden.}
+\item als Rechnername zum Beispiel "`\textbf{vmwarehost}"' 
+\item keine Firewall selektieren
+\item "`German Switzerland"' selektieren (auch als standard Sprache)
+\item Zeitzone Europa/Zürich
+\item Root \textbf{Passwort : hard2go}
+\item neuer User erstellt, \textbf{User: master}, \textbf{Passwort: behave}
+\item keine zusätzlichen Pakete selektiert
+\end{itemize}
+Der benötigte Speicherplatz für diese Installation beläuft sich auf 915MB. Ein vollständiges Protokoll der Installation ist unter \verb~/root/install.log~ zu finden.
+Erklärungen zu den einzelnen Optionen und weitere Installationsdetails können den Online Handbüchern von RedHat entnommen werden (Installation von Red Hat 7.3 \cite{installLinux73} oder für die aktuelleste Version \cite{installLinuxCurrent}).
+%----------
+\section{Virtuelles System\index{Installation der Übungsumgebung!Virtuelles System}}
+\label{sec:VirtuellesSystem}
+Wie in der Evaluation des Übungsablaufs im Anhang \ref{cha:EvaluationDesUebungsablaufs} auf Seite \pageref{cha:EvaluationDesUebungsablaufs} erläutert werden für die Übung mit VMware zwei Server simuliert: Server 1 und Server 2. In den folgenden Abschnitten wird erklärt, wie in VMware die zu simulierenden Hardwarekomponenten eingestellt werden und anschliessend die beiden Server innerhalb der VMware-Umgebung aufgesetzt werden.
+\subsection{VMware Konfiguration\index{VMware!Konfiguration}}
+\label{subsec:VmwareKonfiguration}
+Die Installation eines virtuellen Servers erfolgt nach dem Starten von VMware am einfachsten über den "`Configuration Wizard"'. Die einstellbaren Optionen sind gut beschrieben. Um ein neues Virtuelles System aufzusetzten sind folgende Einstellungen in der hier aufgezählten Reihenfolge zu machen.
+\begin{itemize}
+\item Create standard virtual machine
+\item Linux
+\item \emph{Display name} Bsp. "`Standard Server"'
+\item "`Full path of the virtual machine directory"' \\Bsp.			\verb~/home/master/vmware/standard_server/~
+\item Create a new virtual disk
+\item "`Virtual disk size (in megabytes)"' Bsp. 1300
+\item CD-ROM: Standard-Einstellungen belassen
+\item Floppy: Standard-Einstellungen belassen
+\item Bridged networking (\emph{Bridged Modus} in Kapitel \ref{subsec:Netzwerkkonfiguration} auf Seite \pageref{subsubsec:BridgedModus})
+\end{itemize}
+Bemerkung: Der Hauptspeicher wird standardmässig mit 32 MB eingerichtet. Falls mehr Hauptspeicher zur Verfügung steht, kann dies nach Beenden des "`Wizards"' auf folgende Weise eingestellt werden:
+\begin{enumerate}
+\item Über \verb~Settings>Configuration Editor~ den Konfigurationseditor öffnen
+\item In der Auflistung von Systemkomponenten "`Memory"' auswählen
+\item Den Wert von "`Guest Size (MB)"' auf \verb~128~ einstellen
+\end{enumerate}
+Nun ist die virtuelle Hardware des zu simulierenden Servers eingstellt. Jetzt kann auf dem virtuellen System ein Betriebssystem installiert werden.  
+
+\subsection{Virtuelle Server\index{Installation der Übungsumgebung!Virtuelles System!Virtuelle Server}}
+\index{Installation!Server 1}
+\index{Installation!Server 2}
+\label{subsec:VirtuelleServer}
+Um auf dem virtuellen System Linux zu installieren, muss die erste CD der Distribution eingelegt und das virtuelle System gestartet werden. Dies geschieht über die "`Power On"' Schaltfläche. Das virtuelle System wird direkt von der realen CD gestartet. Alternativ könnte das Betriebssystem auch von ISO Image-Dateien der CDs erstellt werden (siehe VMWare Handbuch 
+\cite{VMwareManual}).
+
+Für die Installation der beiden virtuellen Server wurde Red Hat 7.3 verwendet. Der Installationsvorgang der beiden Server unterscheidet sich nur darin, das bei Server 1 während der Installation die Option "`Shadow-Passwörter verwenden"' deaktiviert wird. Im folgenden wird in den einzelnen Schritten des Installationsvorgangs darauf hingewiesen, wenn für die Server eine individuelle Einstellung notwendig ist. Auf den Servern wird keine graphische Oberfläche installiert. Während der Installation werden folgende Einstellungen in der angegebenen Reihenfolge vorgenommen. Bei nicht angegebenen Optionen ist die Standardeinstellung beizubehalten.
+\begin{itemize}
+\item textbasierte Installation durch die Eingabe von \verb~text~ wählen
+\item Sprache für den Installationsvorgang: Deutsch
+\item Tastaturtyp: sg-latin1
+\item Maustyp: Microsoft IntelliMouse (PS/2), ohne die Drei-Tastentyp-Emulation
+\item
+	Server 1: \textbf{Installationstyp: Benutzerdefinierte Installation}\footnote{Standardmässig würde sonst Password-Shadowing installiert werden.}
+	\\Server 2: \textbf{Installationstyp: Server}
+\item Für die Partionierung wurde der \emph{Disk Druid} gewählt.
+\item Initialisierung und Löschen des Disks bestätigen (es handelt sich hierbei, um die virtuelle Harddisk)
+\item \textbf{Partitionen: 47MB (ext3) /boot ,200 MB (swap), / (ext3) 1052MB}\index{Installation der Übungsumgebung!partitionieren} (hier kann die Grösse auf 1 MB eingestellt und die Option "`Den gesamten verfügbaren Platz ausfüllen"' selektiert werden.
+\item Bootloader GRUB auswählen
+\item Bootloader im Masterboot record installieren lassen
+\item Keine speziellen Boot-Optionen eintragen
+\item kein GRUB Passwort verwenden
+\item Die Optionen "`bootp"'und "`dhcp"' deaktivieren\footnote{Die IP-Adresse wird manuell gesetzt, darum wird der DHCP-Dienst nicht benötigt.}\index{Installation der Übungsumgebung!IP-Adressen}
+	\\Server 1: \textbf{IP-Adresse 192.168.0.100}\footnote{Der Versuch ist nicht abhängig von den gewählten IP-Adressen. Diese IP-Adressen sind als Vorschläge zu verstehen.}
+	\\Server 2: \textbf{IP-Adresse 192.168.0.200}\\
+	Netzmaske 255.255.255.0 eintragen
+\item als Rechnername zum Beispiel "`server1"', beziehungsweise "`server2"'
+\item keine Firewall selektieren
+\item "`German Switzerland"' selektieren (auch als standard Sprache)
+\item Zeitzone Europa/Zürich
+\item Root \textbf{Passwort : hard2go}
+\item neuer User erstellt,\textbf{ User: master},\textbf{ Passwort: behave}
+\item Konfigurationansicht der Authentifizierung (betrifft nur Server 1): Die Option "`Shadow-Passwörter verwenden"' deaktivieren
+\item alle Pakete deselektiert, Web-Server selektiert
+\end{itemize}
+Diese Installation benötigt 940 MB Speicherplatz auf dem virtuellen System. Ein vollständiges Protokoll der Installierten Pakete wird später unter \verb~/root/install.log~ zu finden sein.
+Die Ausgabe des Befehls \verb~ifconfig~\index{ifconfig@\texttt{ifconfig}} auf dem virtuellen System liefert uns die folgende Informationen\footnote{Falls die Ausgabe nicht den Erwartungen entspricht, können die Netzwerkeinstellungen zum Beispiel mit dem Konfigurationsprogramm \verb~/usr/bin/setup~\index{setup@\texttt{setup}} editiert werden}:
+\begin{figure}[H]
+\begin{center}
+\input{./files/inc/screendumps/standard_ifconfig.tex}
+\caption{Ausgabe des Befehls ifconfig auf dem virtuellen System\label{pic:ifconfig}}
+\end{center}
+\end{figure}
+In der Abbildung \ref{pic:ifconfig} ist zu erkennen, dass das virtuelle System eine IP-Adresse und eine MAC-Adresse erhalten hat. Die Ausgabe ist nicht zu unterscheiden von einem realen System mit einer realen Netzwerkkarte. Nun kann auf einem anderen Rechner des Uebungsnetzes in einem Browser die IP-Adresse (hier 192.168.0.100) eingegeben werden und es wird eine Standard Webseite des Apache-Webservers angezeigt.
+
+Auf dem Server 1 werden nach der Installation die Dienste \verb~rlogin~ und \verb~finger~ aktiviert. Wie diese Dienste aktiviert werden entnehmen sie bitte dem Abschnitt \ref{sec:rlogin} zum Thema \verb~rlogin~ auf Seite \pageref{sec:rlogin} und dem Abschnitt \ref{sec:finger} zum Thema \verb~finger~ auf Seite \pageref{sec:finger}.
+
+Auf Server 2 sind die Dienste \verb~finger~ und \verb~rlogin~ deaktiviert. Das Bootmanagerpasswort ist eingschaltet und lautet: \textbf{nashorn}. Wie der Bootmanager GRUB konfiguriert werden muss, um das Bootmanagerpasswort zu aktivieren ist in den Lösungen zu den Übungen in Abschnnitt  \ref{sec:Loesungen} auf Seite \pageref{sec:Loesungen}.

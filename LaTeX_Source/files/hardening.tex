@@ -1,0 +1,271 @@
+\chapter{Härten eines Systems \index{Härten|(}}
+\label{cha:HaertenEinesSystems}
+Es ist die Aufgabe eines Administrators eines Systems, dieses so sicher wie möglich oder so sicher wie nötig zu machen. Um die Sicherheit zu erhöhen gibt es verschiedene, nahezu unendlich viele Möglichkeiten. Aus diesem Grund ist es schwierig, eine "`Anleitung"' zu schreiben. Es kann hier lediglich eine Auswahl von Möglichkeiten gegeben werden, die helfen können, die Sicherheit zu erhöhen. Es soll einen Überblick geben und soll gleichzeitig ein Gefühl dafür geben, was alles beachtet werden sollte. 
+
+%----------
+\section{Was ist Härten eines Systems?}
+\label{sec:WasIstHaerten}
+Eine Definition \index{Härten!Definition} von \glqq Härten eines Systems\grqq\ ist wie folgt:
+\begin{quote}
+``System hardening is a step by step process of securely configuring a system to protect it against unauthorized access, while also taking steps to make the system more reliable. Generally anything that is done in the name of system hardening ensures the system is both secure and reliable.''\footnote{Definition von \url{http://www.itcoach.com/unsafe/System-Hardening.htm}}
+\end{quote}
+
+Härten eines Systems bedeutet damit, ein System so zu konfigurieren, dass es sicher und zuverlässig ist. Dies umfasst nicht nur, bekannte Sicherheitsprobleme zu lösen bzw. zu umgehen, sondern es umfasst auch die Frage, welche Services auf dem System laufen müssen.
+
+Oft wird eine Unterteilung\index{Härten!Unterteilung} gemäss Tabelle \ref{tab:securitylevels} gemacht. In dieser Arbeit wird diese Unterteilung nicht gemacht, da es oft schwierig ist, einzelne Punkte in eine Kategorie einzuteilen. Ausserdem ist es nicht entscheidend, in welche Kategorie diese Punkte fallen, wichtig ist nur, dass sie Sicherheitsrelevant sind und deshalb auch beachtet werden. Aus diesem Grund ist der Prozess des Härtens nicht in Kategorien unterteilt, sondern wird anhand eines Ablaufes dargestellt, der alle Kategorien enthält.
+
+\LTXtable{\linewidth}{./files/inc/tables/securitylevels}
+
+%----------
+\section{Prinzipien des Härtens}\index{Härten!Varianten}
+\label{sec:HardeningPrinzipien}
+
+Es gibt verschiedene Ansätze, ein System zu Härten. Zum einen können alle Einstellungen manuell gemacht werden. Das heisst, die Konfigurationen der Programme, die auf dem System laufen, werden von Hand angepasst um deren Sicherheit zu erhöhen. Eine weitere Möglichkeit ist, Linux-Tools zu Hilfe zu nehmen. Diese versuchen die Konfiguration der Programme nach den Aspekten der Sicherheit vorzunehmen. Die dritte Möglichkeit ist schliesslich, ein Produkt einzusetzen, welches das Prinzip des Härtens implementiert. Die zwei letzten Varianten unterscheiden sich grundsätzlich nicht durch die Art und Weise, wie sie das Problem angehen. Meist unterstützen aber kommerzielle Produkte nicht nur das Härten, sondern haben noch andere sicherheitsrelevanten Teile implementiert. Die verschiedenen Varianten sind in Tabelle \ref{tab:hardprinc} zusammengefasst:
+\pagebreak
+
+\LTXtable{\linewidth}{./files/inc/tables/hardprinc}
+
+
+%----------
+\section{Manuelles Härten \index{Härten!manuell}}
+\label{sec:ManuellesHaerten}
+Bei der manuellen Konfiguration der Programme, kann das System sehr spezifisch eingerichtet werden. Das ist ein grosser Vorteil gegenüber der automatischen Anpassung der Konfigurationen, bedeutet aber auch, dass der Systemadministrator mehr Wissen über die auf dem Server eingesetzte Software haben muss. Grundsätzlich sollte man sich dabei folgende Punkte überlegen:
+\begin{itemize}
+	\item	Welche Dienste werden auf dem System wirklich benötigt?
+	\item	Welcher Benutzer hat welche Berechtigungen auf dem System?
+	\item	Wie ist das System zu Härten, damit bei einer Kompromittierung nicht das ganze System betroffen ist?
+	\item	Welche Programme sind geeignet, um unberechtigte Zugriffe zu erkennen und aufzeichnen zu können?
+\end{itemize}
+Diese Punkte sind entscheidend und gelten nicht nur für die manuelle Konfiguration, sondern für alle Vorgehensweisen. Am meisten Gedanken wird man sich aber bei der manuellen Konfiguration machen müssen. In der vorliegenden Arbeit geht es nicht um das Erkennen von unberechtigten Zugriffen, trotzdem sollte man wissen, dass es auch zum Härten eines Systems gehört.
+
+\subsection{Ablauf vor und während der Installation}
+Folgendes ist ein Vorschlag, ein System zu Härten. Die Liste ist nicht abschliessend, sie soll viel mehr einen Überblick geben, worum es in dem Prozess geht und dabei soll verständlich gemacht werden, was Härten eines Systems bedeutet. 
+
+\begin{enumerate}
+	\item	Wählen Sie ein BIOS Passwort\index{BIOS Passwort} und stellen Sie sicher, dass das System nur von der Festplatte gestartet werden kann (booten mit Diskette, etc. abstellen). Damit verhindern Sie, dass jemand, der physischen Zugriff zum Rechner hat, diesen mit einer Diskette oder CD Rom booten kann.
+	\item	Wählen Sie ein geeignetes Dateisystem\index{Dateisystem wählen} und partitionieren\index{Partitionierung} Sie die Festplatte. Was eine sinnvolle Partitionierung bedeutet hängt vom Einsatz des Systems ab. Zum Beispiel sollte ein System, das als Mailserver eingesetzt wird, eine eigene Partition für den Mail Spooler\footnote{Ein Mail Spooler ist für die Versendung und das Verteilen von Mails zuständig} haben (\verb~/var/mail~ und/oder \verb~/var/mail/spool~). Damit wird verhindert, dass  ein Benutzer den Mail Spool und damit die ganze Festplatte füllen kann. Folgende Punkte sind Vorschläge, die beachtet werden sollten.
+	\begin{itemize}
+		\item	Es sollten sich alle Verzeichnisse, auf die ein Benutzer Schreibrecht hat, auf einer eigenen Partition befinden. Dies umfasst zum Beispiel \verb~/home~ und \verb~/tmp~. Das reduziert das Risiko einer "`user DoS"'\footnote{Das Bedeutet, ein Benutzer könnte die root Partition (\verb~/~) mit Daten auffüllen und damit das System unbenutzbar machen.} Attacke.
+		\item	Partitionen die dynamisch ihren Inhalt ändern, wie z.B. \verb~/var~ sollten ebenfalls auf eine eigene Partition, da sie sonst in kurzer Zeit überfüllt werden könnten.
+		\item	Partitionen, auf denen Software installiert wird, die nicht zur Distribution gehört, sollten auf einer eigenen Partitionen sein. Damit wird die Software bei einer allfälligen Neuinstallation nicht gelöscht. Das hat nicht direkt mit dem Härten eines Systems zu tun, hilft aber im Falle einer Neuinstallation.
+		\item	Daten, die statisch sind, sollten auf einer eigenen Partition sein. Diese kann dann read-only gemountet werden.
+	\end{itemize}
+	
+	Das gewählte Dateisystem kann im Fall eines Absturzes Auswirkungen haben. Das Standarddateisystem ist \verb~ext2~. Es wird aber empfohlen, ein journalling Dateisystem wie z.B. \verb~ext3~ zu wählen. Die Wahrscheinlichkeit Daten zu verlieren ist damit kleiner (zudem ist \verb~ext3~ im Betrieb schneller).
+	\item	Wählen Sie ein sicheres root Passwort\footnote{\label{fn1}ein sicheres Passwort ist mind. 6 Zeichen lang, hat mind. 2 alphabetische Zeichen und 1 numerisches oder 1 spezial Zeichen. Das Passwort muss vom user login verschieden sein und darf auch nicht davon abgeleitet werden können. Es darf zudem nicht von einem Wort oder einer Wortkombination abgeleitet werden können.}\index{Passwörter}. Das ist ein grundlegender Schritt um ein sicheres System zu bekommen. Am Besten verwenden Sie dazu einen Passwortgenerator. Diese generieren je nach Programm sehr sichere Passwörter (z.B. \textit{makepasswd}\index{makepasswd@\texttt{makepasswd}} unter Linux).
+	\item	Schalten sie "`Shadow Password"'\index{Shadow Passwort} ein. Shadow Password bedeutet, das Passwort wird in \verb~/etc/shadow~ gespeichert und kann nur noch vom user \verb~root~ und von der Gruppe \verb~shadow~ gelesen werden. Damit wird verhindert, dass ein Angreifer eine Kopie der Passwortdatei bekommen kann und einen Passwort Cracker darauf ansetzt.
+	\item	Finden Sie heraus, welche Dienste auf dem System laufen. Installieren und starten Sie nur die benötigten Dienste. Dienste sind Programme wie z.B. ein ftp-Server (z.B. \textit{Proftp}) oder ein Webserver (\textit{Apache}). Überlegen Sie sich, was sie auf Ihrem System wirklich anbieten wollen und schalten Sie alle anderen Dienste aus. Der Grund liegt darin, dass Netzwerkdienste auf eine Verbindung von ausserhalb warten. Diese Dienste können (auch unbekannte) Sicherheitslücken aufweisen und sind damit eine Gefahr. Stellen Sie weiter sicher, dass beim Aufstarten kein Dienst, den sie nicht brauchen, versucht wird vom Betriebssystem zu starten.
+	\item	Überprüfen  und berichtigen Sie die Zugriffsberechtigungen\index{Zugriffsberechtigungen} auf die Dienste. Es sollen nur Benutzer Zugriff auf einen Dienst erhalten, die ihn wirklich benötigen. Oft ist das nur der user root.
+	\item	Installieren Sie nur die Pakete bzw. Programme, die Sie wirklich auf Ihrem System benötigen. Jede übliche Linux Distribution (z.B. SuSE, RedHat, Debian, etc.) beinhaltet tausende von Programmen. Wählen Sie aus denen nur die benötigten aus, damit Sie nicht Programme installiert haben, die es einem Angreifer erleichtern können eine Attacke durchzuführen. Erleichtert wird die Auswahl bei den meisten Distributionen dadurch, dass die Programme in Kategorien unterteilt sind, die nach Bedarf komplett ausgeschaltet werden können. Achten Sie bei der Auswahl der Programme darauf, dass Sie als sicher geltende Programme installieren. 
+	\item	Updaten aller installierten Pakete, um jedes Paket auf den aktuellsten Stand zu setzen.
+	\item	Gewünschte "`user accounts"' anlegen. Dabei soll beachtet werden, dass sichere Passwörter verwendet werden. Dabei gelten die gleichen Regeln wie beim Anlegen eines root Passwortes.
+\end{enumerate}
+
+\subsection{Ablauf nach der Installation}
+Wenn die im letzten Abschnitt beschriebenen Schritte durchgeführt sind, ist das System installiert und lauffähig. Trotzdem kann noch mehr getan werden, um das System sicher zu machen. Dies ist wieder eine Auswahl, die nicht abschliessend ist.
+\begin{enumerate}
+	\item	Setzen Sie ein Bootmanager\index{Bootmanager Passwort} (\textit{Lilo} oder \textit{Grub}) Passwort. Haben Sie kein Bootmanager Passwort, kann jemand, der root Berechtigung auf dem System erlangt hat, das root Passwort ändern und das System neu starten. In diesem Fall haben Sie keinen Zugriff mehr auf Ihr System, da sie das Passwort nicht mehr kennen. Die einzige Lösung ist dann eine komplette Neuinstallation. Mit einem Bootmanager Passwort verhindern Sie den Neustart ohne Passwort. Das gewählte Passwort sollte natürlich verschieden vom root Passwort sein.
+	\item	Schränken Sie den Zugriff auf das System über das Netz ein. Das bedeutet, ein Benutzer muss sich zuerst mit einen Benutzernamen/Passwort einloggen, um dann mit \verb~su~ oder \verb~sudo~ root Rechte zu bekommen. Damit wird verhindert, dass sich jemand direkt als root einloggen kann und hat zudem den Vorteil, dass ein direkter Angriff auf das root Passwort sinnlos wird, da zuerst ein Benutzerpasswort gefunden werden muss.
+	\item Falls Personen physischen Zugriff zum System haben, erlauben Sie nur bestimmten Personen, beim System einen Neustart durchzuführen. Wenn Sie die Standardeinstellung beibehalten kann \emph{jeder} das System neu starten (mit der Tastenkombination \verb~Ctrl-Alt-Del~).
+	\item Achten Sie beim mounten\index{Mounten} von Partitionen darauf, dass Sie auf bestimmten Partitionen keine Ausführung von Programmen erlauben (z.B. auf der Partition \verb~/tmp~). Überprüfen Sie die Mountingtabelle (\verb~/etc/fstab~) und setzen Sie die Optionen entsprechend\footnote{Details zu den Optionen erhalten Sie in der Manual Page des mount Befehls (\verb~man mount~)}.
+	\item Informieren Sie sich über Sicherheitsupdates die Ihre Software betrifft. Am besten in einer Security Announce Mailing List.
+	\item Mit PAM\index{PAM} (Pluggable Authentication Module) können Sie festlegen, wie Benutzer von den Programmen authentifiziert werden. Das heisst, der Zugriff auf Programme kann geregelt werden. Da die Authentifizierung ein sehr zentraler Punkt ist, ist dieser ein eigener Abschnitt gewidmet. Siehe \ref{sec:Authentifizierung}. 
+	\item Limitieren Sie die Resourcen\index{PAM!Resourcen zuteilen}, die ein Benutzer belegen kann. Ohne diese Massnahme kann \emph{jeder} Benutzer so viel CPU Rechenleistung und Speicher belegen wie er will. Dies bedeutet, jeder kann das System auslasten bzw. überlasten. Sie können mit PAM (s. oben) einstellen, wieviel Rechenleistung, Speicher, etc., Sie jedem Benutzer zuteilen wollen. Genau genommen können mit PAM alle Resourcen des Systems eingeteilt werden. Damit ein Benutzer nur einen Teil des Festplattenspeichers belegen kann, können Sie pro Benutzer eine quota anlegen. Detaillierte Informationen dazu können unter \url{http://seifried.org/lasg/users/} gefunden werden.
+	\item Wenn sich ein Benutzer mit einem falschen Benutzernamen und/oder Passwort einloggt, muss er eine kurze Zeit warten, um einen neuen login promt zu erhalten. Erhöhen Sie diese Zeit dynamisch, das heisst, bei jedem Fehlversuch wird die Zeit erhöht. Damit erschweren Sie einem potentiellen Angreifer einen "`Brute Force"'\footnote{Dabei werden alle möglichen Paare von Benutzername/Passwort systematisch durchprobiert bis ein gültiges Paar gefunden wurde} Angriff auf das System, da es sehr zeitaufwändig wird. Sie können den Benutzer auch nach 3 Fehlversuchen sperren. Sie sollten die Login-Versuche in einer Logdatei festhalten.
+	\item Falls es nötig ist, dass Benutzer auf dem System root Rechte bekommen, sollten Sie statt dem Befehl \verb~su~\index{su@\texttt{su}} den Befehl \verb~sudo~\index{sudo@\texttt{sudo}} verwenden. Dieser bietet mehr Möglichkeiten, z.B. kann in der Konfigurationsdatei bestimmt werden, welche Befehle von welchem Benutzer ausgeführt werden dürfen. Zusätzlich gibt es bei der Eingabe eines falschen Passwortes einen Eintrag in der Logdatei und diese wird dem Administrator als Mail zugesandt.
+	\item Limitieren Sie die Rechte des Benutzers und zeichnen Sie dessen Aktivitäten auf. Zum Beispiel sollten die Rechte der Dateien\index{Dateirechte} angepasst werden, damit der Benutzer nur die Dateien lesen kann, die nötig sind. Es können auch die Standardvorgaben für das Erstellen von Dateien geändert werden, damit diese nur noch vom Benutzer selbst lesbar sind (\verb~umask~). Im Bereich der Aufzeichnungen gibt es viele Möglichkeiten, angefangen vom Aufzeichnen des Anmeldens bis hin zum Aufzeichnen jedes einzelnen Zeichens, das der Benutzer eingibt. Hier ist ein sinnvolles Mittelmass zu finden (\textit{syslog}).
+	\item Überprüfen Sie die Passwörter, die von den Benutzern gewählt wurden, oder noch besser, lassen Sie nur sichere Passwörter zu, in dem Sie bereits beim Erstellen Wortlisten verwenden und dem Benutzer nur erlauben, Passwörter zu benutzen, die mit keinem Wort in den Wortlisten in Verbindung gebracht werden können. Am Besten verwenden Sie für die Überprüfung \textit{cracklib}\index{cracklib} mit einer der Wortliste \textit{cracklib\_dict}. Für die Passwörter gelten die Anforderungen, die in der Fussnote \ref{fn1} beschrieben sind.
+	
+	Um nachträglich zu überprüfen ob die gewählten Passwörter sicher sind, gehen sie genauso vor wie ein Angreifer. Verwenden Sie einen Passwort cracker\index{Passwort Cracker} wie z.B. \textit{john}\index{johntheripper}\footnote{Dieses Programm kann von \url{http://www.openwall.com/john/} heruntergeladen werden.} zusammen mit Wortlisten. Wenn Sie ein Passwort knacken können, haben Sie eine Sicherheitslücke entdeckt und können entsprechende Massnahmen ergreifen.
+	\item Es ist wichtig zu entscheiden, wer Zugriff zu den Logdateien hat, da diese oft sehr genaue Informationen über ein System liefern. Zudem werden sie nutzlos, wenn ein Angreifer die Logdateien nach einem erfolgreichen Angriff ändern kann.
+	\item Sie können Ihr System sicherheitstechnisch in vielen Hinsichten verbessern, wenn Sie den Kernel optimieren. Viele Distributionen bieten "`Kernel Patches"' an, die die Sicherheit verbessern. Viele Änderungen können zur Laufzeit angepasst und verändert werden. Dazu dient der Befehl \verb~sysctl~\index{sysctl@\texttt{sysctl}}. Er erlaubt zum Beispiel das Ignorieren von icmp requests, aber natürlich noch vieles mehr. Informationen dazu finden Sie ebenfalls in der Manpage (\verb~man sysctl~).
+	\item Sobald Ihr System fertig konfiguriert ist, machen Sie ein Snapshot von dem System. Dies beinhaltet ein \verb~md5sum~ der wichtigsten Verzeichnisse (z.B. boot). Damit können Sie jederzeit überprüfen, ob ihr System noch im originalen Zustand ist.
+\end{enumerate}
+
+
+Das ist der Ablauf, um ein System zu Härten. Die konkreten Einstellungen die gemacht werden müssen, sind in diesem Ablauf nicht beschrieben, da sie Distributionsabhängig sind. Für Debian können die Einstellungen im Securing Debian Manual \cite{secDebian} nachgelesen werden. Für andere Distributionen gibt es jeweils sehr umfangreiche Dokumentationen, die auf den Webseiten gefunden werden können.
+
+\subsubsection{Beispiel ssh}\index{Härten!Beispiel ssh}\index{ssh härten}
+Da im obigen Ablauf nur die Schritte, nicht aber die konkreten Einstellungen zum Härten eines Systems beschrieben wurden, soll hier stellvertretend für andere Dienste der \textit{ssh} Dienst genauer betrachtet werden.
+
+Falls Sie anstatt \textit{ssh} immer noch \textit{telnet} verwenden, sollten Sie \textit{telnet} abschalten und stattdessen als externe Zugriffsmöglichkeit nur noch \textit{ssh} verwenden. Anschliessend sollten Sie folgende Einstellungen in der \textit{OpenSSH} Konfigurationsdatei machen:
+\begin{itemize}
+	\item	\verb~ListenAddress IPx~\\ \textit{ssh} soll nur auf einem \glqq Interface\grqq\ auf Verbindungen warten. Diese Einstellung ist nötig, falls Sie mehrere Netzwerkkarten haben, damit Sie die Zugriffe besser kontrollieren können. Ausserdem können Sie den Zugriff einschränken, indem Sie z.B. den Zugriff nur von innerhalb Ihres Netzes zulassen, von Ausserhalb jedoch sperren.
+	\item	\verb~PermitRootLogin No~ \\Es darf sich niemand direkt als root einloggen. Will jemand root Rechte via \textit{ssh} bekommen, ist zweimaliges Einloggen erforderlich. Das heisst ein "`Brute Force"' Angriff auf das root Passwort wird sinnlos, da auch ein gültiges root Passwort nicht akzeptiert wird.
+	\item	\verb~Listen Port xy~\\ Ändern Sie den port (Standardport für \textit{ssh} ist Port 22), auf den \textit{ssh} auf Verbindungen wartet. Damit kann niemand ganz sicher sein, ob der \textit{ssh} Dienst wirklich läuft. \emph{Wichtig:} Diese Option ist \glqq security by obscurity\grqq\ (Sicherheit durch Verwirrung) und dient dazu, unerfahrene Angreifer zu verwirren.
+	\item	\verb~PermitEmptyPasswords no~\\Leere Passwörter dürfen niemals erlaubt werden.
+	\item	\verb~AllowUsers name ref user@host~\\ Es wird nur bestimmten Benutzern erlaubt, sich via \textit{ssh} einzuloggen. 
+	\item	\verb~AllowGroups wheel admin~\\ Nur Mitglieder der angegebenen Gruppen (in diesem Beispiel die Gruppe \verb~wheel~ und \verb~admin~) dürfen sich via \textit{ssh} einloggen.
+	\item	\verb~PasswordAuthentication yes~\\Benutzer dürfen sich mit einem Passwort anmelden. Die bessere Lösung ist, die Option auf \verb~no~ zu setzen, um nur den Zugriff via einem ssh-key zuzulassen. Ein Login via ssh-key basiert auf dem Prinzip der asymmetrischen Verschlüsselung. Das heisst, der Benutzer hat einen "`private key"' den sonst niemand kennt. Dieser wird zur Authentifizierung benutzt und kann damit nicht durch einen "`Brute Force"' Angriff herausgefunden werden, was grundsätzlich bei einer Authentifizierung mit einem Passwort möglich ist.
+	\item	\verb~Protocol 2~\\Es soll nur die Protokoll Version 2 erlaubt sein. Version 1 hat einige Sicherheitslücken.
+\end{itemize}
+
+%----------
+\section{Automatisches Härten}\index{Härten!automatisch}
+\label{sec:automatischesHaerten}
+Im vorangegangenen Abschnitt wurde beschrieben, wie ein System von Hand gehärtet werden kann. Das sieht nach sehr viel Arbeit aus und tatsächlich ist es das auch. Man könnte sich die Frage stellen, ob es nicht ein Programm gibt, das einem die ganzen Einstellungsarbeiten abnimmt und den Vorgang des Härtens automatisiert. Tatsächlich gibt es verschiedene Ansätze, die genau das versuchen. Trotzdem muss gesagt werden, dass ein Programm nicht die ganze Arbeit ausführen kann. Sicherheit ist ein Prozess, der nicht bei der Konfiguration aufhört. Es gibt dauernd neue Programme, neue Angriffe, neue Gefahren. Ein Programm, dass ein System automatisch härtet, kann diesen Anforderungen nur in einem gewissen Masse nachkommen. Das bedeutet, auch beim Einsatz solcher Tools muss der Administrator seinen Teil leisten und muss mit dem System und mit den Gefahren vertraut sein. Es ist ein Irrtum, jeder könne mit dem geeigneten Programm ein sicheres System haben.
+
+Im Folgenden werden zwei Produkte vorgestellt, die das Härten automatisieren. Das eine ist das Paket \textit{harden}, das andere ist \textit{Bastille Linux}.
+
+\subsection{Harden}\index{Härten!automatisch!Harden}\index{Harden Programm}
+Dieses Paket versucht es dem Administrator zu erleichtern, ein System zu installieren, das sicher und leichter zu administrieren ist. Es bringt eine schnelle Hilfe bei der Installation. Es deinstalliert Pakete mit bekannten Sicherheitsproblemen oder, soweit als möglich, auch Programme, die Klartext über ein Netz übermitteln, etc. Es installiert auch Tools, die die Sicherheit des Systems erhöhen sollen (Intrusion Detection Tools, Analysetools, etc.). Konkret wird folgendes installiert:
+\begin{itemize}
+	\item \verb~harden-doc~ \\Dokumentationen
+	\item \verb~harden-tools~ \\Tools um die Sicherheit des Systems zu erhöhen, wie z.B. kernel patches, intrusion detection, etc.
+	\item \verb~harden-environment~ \\Hilft eine Umgebung zu konfigurieren.
+	\item \verb~harden-servers~ \\Entfernt Server, die als nicht sicher gelten (z.B. \textit{telnetd}).
+	\item \verb~harden-clients~ \\Entfernt Clients, die als nicht sicher gelten (z.B. \textit{telnet}).
+	\item \verb~harden-remoteflaws~ \\Entfernt Programme mit Sicherheitslücken, die es einem entfernten Angreifer erlauben, das System zu kompromittieren (Welche Programme das sind, hängt von den Programmen und deren Versionen ab).
+	\item \verb~harden-localflaws~ \\Entfernt Programme mit Sicherheitslücken die es einem lokalen Angreifer erlauben, das System zu kompromittieren (Welche Programme das sind, hängt von den Programmen und deren Versionen ab).
+	\item \verb~harden-remoteaudit~ \\Tools um ein System von einem entfernten Rechner aus zu überwachen.
+\end{itemize}
+Das \textit{harden} Paket wird ständig erweitert und es ist deshalb möglich, dass diese Aufzählung nicht mehr aktuell ist. Die aktuelle Version kann von \url{http://ftp.debian.org/debian/pool/main/h/harden/} heruntergeladen werden.
+
+\subsection{Bastille Linux}\index{Härten!automatisch!Bastille Linux}\index{Bastille Linux}
+\textit{Bastille Linux} ist ein Tool, das ein  System automatisch härtet. Ursprünglich wurde es für \textit{Red Hat} und \textit{Mandrake} entwickelt, funktioniert mittlerweilen aber auch für andere Distributionen. Bei \textit{Bastille Linux} gibt es verschiedene Modi, aus denen einer gewählt werden kann:
+\begin{itemize}
+	\item \textit{Bastille Linux} versucht anhand von Antworten zu Sicherheitsfragen das System zu konfigurieren. Diese Variante nennt sich \textit{InteractiveBastille}.
+	\item Sicherheitsstufen (locker, moderat, paranoid) können gewählt werden. Je nach der gewünschten Stufe wird das System konfiguriert. Diese Variante nennt sich \textit{BastilleChooser}
+	\item Es wird eine bereits definierte Konfigurationsdatei genommen (z.B. von \textit{Bastille Linux}). Anhand dieser Datei wird ein Sicherheitskonzept auf dem System implementiert. Diese Variante nennt sich \textit{AutomatedBastille}.
+\end{itemize}
+Weitere Informationen zu diesem Projekt können auf \url{http://www.bastille-linux.org} gefunden werden.
+\index{Härten|)}
+
+%----------
+\section{Authentifizierung}\index{Authentifizierung}
+\label{sec:Authentifizierung}
+
+Ein wichter Aspekt der Sicherheit ist die Authentifizierung der Benutzer durch das System. Immer, wenn sich ein Benutzer einloggt, wird überprüft, ob er Zugriff zum System hat und welche Rechte ihm gegeben werden sollen. In den Anfängen des Computerzeitalters hat es gereicht, einen Benutzer anhand des Namens und eines Passwortes zu identifizieren. Man glaubte jedem, der ein korrektes Passwort eingegeben hat, dass er auch wirklich derjenige Benutzer sei. Seit dem die Computer mehr und mehr vernetz wurden, kam der Anspruch dazu, dass man kontrollieren kann, woher sich ein Benutzer einloggt und was er auf dem System machen darf. Daraus sind komplexere Authentifizierungsmechanismen entstanden, die im Folgenden erklärt werden. Dies soll helfen zu verstehen, was genau passiert, wenn man sich auf einem System über ein Netzwerk oder lokal einloggt.
+
+\subsection{Prozesse}\index{Prozesse unter Linux}
+Um verstehen zu können, was bei einem login passiert wird hier ein kleiner Überblick der Prozesse unter Linux gegeben. Beim Starten des Systems wird zuerst der Kernel in den Hauptspeicher geladen. Dieser lädt die Treiber für die Hardware und initialisiert sie. Anschliessend wird die root Partition (\verb~/~) gemountet und der erste Prozess gestartet. Dies ist der \emph{init} Prozess\index{init Prozess}\index{Prozesse unter Linux!init}. Dieser ist der Vater aller Prozesse. Von ihm werden alle anderen Prozesse abgeleitet. Dies kann man gut nachvollziehen, wenn man den Befehl \verb~pstree~\index{pstree@\texttt{pstree}} in der Konsole eingibt. Eine mögliche Ausgabe könnte folgendermassen aussehen:
+\begin{verbatim}
+se@mandy: pstree -u
+init-+-6*[agetty]
+     |-bdflush
+     |-cron
+     |-devfsd
+     |-dhcpcd
+     |-eth0
+     |-kapmd
+     |-keventd
+     |-klogd
+     |-kreiserfsd
+     |-ksoftirqd_CPU0
+     |-kswapd
+     |-kupdated
+     |-lockd
+     |-master-+-pickup
+     |        `-qmgr
+     |-portmap
+     |-rpciod
+     |-sshd---sshd---sshd---bash(se)---pstree
+     `-syslogd
+\end{verbatim}
+Alternativ können die Prozesse und deren Hirarchie auch mit dem \verb~ps~\index{ps@\texttt{ps}} Befehl angeschaut werden. Dann sieht die Ausgabe bei gleichen Prozessen folgendermassen aus:
+\begin{verbatim}
+se@mandy: ps ax -H -o user,pid,tty,stat,command
+USER       PID TT       STAT COMMAND
+root         1 ?        S    init [3]
+root         2 ?        SW     [keventd]
+root         3 ?        SW     [kapmd]
+root         4 ?        SWN    [ksoftirqd_CPU0]
+root         5 ?        SW     [kswapd]
+root         6 ?        SW     [bdflush]
+root         7 ?        SW     [kupdated]
+root         8 ?        SW     [kreiserfsd]
+root        26 ?        S      /sbin/devfsd /dev
+root       858 ?        SW     [eth0]
+root       860 ?        S      /sbin/dhcpcd -t 30 -h mandy eth0
+bin        930 ?        S      /sbin/portmap
+root       934 ?        SW     [rpciod]
+root       935 ?        SW     [lockd]
+root      1014 ?        S      /usr/lib/postfix/master
+postfix   1038 ?        S        pickup -l -t fifo -u
+postfix   1039 ?        S        qmgr -l -t fifo -u
+root      1051 ?        S      /usr/sbin/sshd
+root      1134 ?        S        /usr/sbin/sshd
+se        1136 ?        S          /usr/sbin/sshd
+se        1137 pts/0    S            -bash
+root      1110 ?        S      /usr/sbin/syslogd -m 0
+root      1113 ?        S      /usr/sbin/klogd -c 3 -2
+root      1116 ?        S      /usr/sbin/cron
+root      1128 tty1     S      /sbin/agetty 38400 tty1 linux
+root      1129 tty2     S      /sbin/agetty 38400 tty2 linux
+root      1130 tty3     S      /sbin/agetty 38400 tty3 linux
+root      1131 tty4     S      /sbin/agetty 38400 tty4 linux
+root      1132 tty5     S      /sbin/agetty 38400 tty5 linux
+root      1133 tty6     S      /sbin/agetty 38400 tty6 linux
+\end{verbatim}
+Wie man sieht, werden beim Start verschiedene Prozesse gestartet. Welche das sind, hängt von der Konfiguration und der Verwendung des Systems ab. Zum Beispiel wird hier noch der ssh Deamon (\textit{sshd}) gestartet. Was aber immer vom System bereit gestellt wird, sind mehrere tty\index{tty}. Ein tty ist ein virtuelles Terminal auf dem man sich einloggen kann. Der Begriff tty (TeleTYpe) stammt aus den Anfängen der Computergeschichte, als Computer noch riesige Anlagen im Keller waren und man sich mittels eines Terminals (meist nur ein Bildschirm, eine Tastatur und eine serielle Schnittstelle zum Computer) einloggen musste. Heute geschieht dies lokal, das Prinzip ist aber dasselbe geblieben. In Abbildung \ref{pic:initprocess} sieht man den Vorgang beim Start des Systems. Üblicherweise werden nicht wie in der Abbildung nur 3 tty gestartet, sondern 6 (tty1 bis tty6).
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=10cm]{./files/inc/pictures/pdf/initprocess}
+\caption{\label{pic:initprocess}Prozessvergabelung beim Start des Systems.}
+\end{center}
+\end{figure}
+
+Man sieht, dass der init Prozess \verb~/sbin/*getty~ startet, was zu einer Reihe von *getty Prozessen\index{Prozesse unter Linux!getty} führt. Jeder *getty Prozess stellt ein tty zu Verfügung, das als erstes eine Begrüssungsmeldung auf den Bildschirm schreibt (\verb~/etc/issue~) und anschliessend das login Programm (\verb~/bin/login~) startet. Dabei entsteht kein neuer Prozess. Das login Programm fordert den Benutzer auf, seinen Benutzernamen und das Passwort einzugeben. Dieser Ablauf wird im Folgenden noch genauer erklärt. Sobald das erfolgreich abgeschlossen ist, wird eine shell gestartet, die dem Benutzer weitere Eingaben ermöglicht.
+
+\subsection{PAM - Pluggable Authentication Module}\index{PAM|textbf}
+Was passiert nun genau, wenn das login Programm gestartet wurde und sich ein Benutzer anmeldet? Klassischerweise passiert folgendes:
+\begin{itemize}
+	\item Das login Programm\index{Login Programm} stellt durch Abfrage von Benutzernamen und Passwort sicher, dass der Benutzer überhaupt exisiert und auch derjenige ist, der er vorgibt zu sein. Ferner werden im Erfolgsfalle dem Benutzer Gruppenrechte oder andere Privilegien gestattet.
+	\item Es wird überprüft, ob das Benutzerkonto überhaupt gültig ist.
+	\item Der Inhalt von \verb~/etc/motd~ wird auf dem Bildschirm ausgegeben. Danach wird ein Dienst zur Verfügung gestellt. Dies ist in den meisten Fällen eine shell, kann aber auch ein anderer Dienst sein.
+\end{itemize}
+Damit ist eigentlich alles in Ordnung und man fragt sich, warum kompliziertere Authentifizierungsmechanismen wie PAM überhaupt gebraucht werden.
+
+Mit der klassichen Methode müssen die Authentisierungsmethoden in jedem Programm separat implementiert werden. Was macht man nun, wenn man die Anmeldung bei \emph{allen} Diensten durch ein anderes Verfahren austauschen möchte? Man müsste das Anmeldeverfahren bei allen Programmen neu implementieren und diese neu installieren. PAM (Pluggable Authentication Module) dient nun dazu, diese Authentisierungsmethoden zu vereinheitlichen. Das heisst, anstatt irgendein Anmeldeverfahren in einen Dienst-Server einzubauen, gibt dieser Dienst-Server die Aufgabe an die PAM-Bibliothek weiter. Diese wiederum liest die Konfigurationsdatei des Dienstes, und entscheidet dann, welche Verfahren in welcher Reihenfolge für die Anmeldung des Benutzers angewendet werden. Die verschiedenen Verfahren sind in den Modulen implementiert, die in der Konfigurationsdatei angegeben werden müssen. Dabei wird an die aufrufende Anwendung nur das Gesamtergebnis zurückgegeben. Dieses Prinzip ist in Abbildung \ref{pic:archpam} illustriert. Damit kann ein Administrator für jedes Programm (vom Netzwerk-Serverdienst über das Login bis hin zum Passwortgeschützten Bildschirmschoner) festlegen, welches Modul in welcher Reihenfolge abgearbeitet wird und was für einen Einfluss Erfolg oder Misserfolg eines Moduls auf den Anmeldevorgang haben.
+
+\begin{figure}[h!tb]
+\begin{center}
+\includegraphics[width=8cm]{./files/inc/pictures/pdf/archpam}
+\caption{\label{pic:archpam}Architektur des Pluggable Authentication Module}
+\end{center}
+\end{figure}
+
+Es gibt für jedes Programm, dass PAM unterstützt im Verzeichnis \verb~/etc/pam.d/~ eine eigene Konfigurationsdatei\index{PAM!Konfigurationsdatei}, in der genau das Anmeldeverfahren für dieses Programm festgelegt werden kann. Hier ein Beispiel einer Konfigurationsdatei für das login Programm (\verb~/etc/pam.d/login~):
+\begin{verbatim}
+#%PAM-1.0
+auth     required   /lib/security/pam_securetty.so
+auth     required   /lib/security/pam_stack.so service=system-auth
+auth     required   /lib/security/pam_nologin.so
+account  required   /lib/security/pam_stack.so service=system-auth
+password required   /lib/security/pam_stack.so service=system-auth
+session  required   /lib/security/pam_stack.so service=system-auth
+session  optional   /lib/security/pam_console.so
+\end{verbatim}
+Das Format ist immer wie folgt:
+\begin{verbatim}
+PAM-Dienst Wichtigkeit Modul Argumente
+\end{verbatim}
+
+\begin{description}
+	\item[PAM-Dienst] Der Dienst beschreibt, welche Aufgabe das Modul im Anmeldevorgang übernimmt.
+	\begin{description}
+		\item[auth] übernimmt bei der Benutzeranmeldung zwei Aufgaben: Erstens wird der Benutzer überprüft und zweitens werden Gruppenrechte (unabhängig von \verb~/etc/group~) oder andere Rechte vergeben.\index{PAM!auth@\texttt{auth}}
+		\item[account] begrenzt den Zugang nach Folgenden Kriterien\index{PAM!account@\texttt{account}}
+		\begin{itemize}
+			\item Uhrzeit
+			\item verfügbare Systemressourcen (CPU, Speicher, etc.)
+			\item Ort, von dem aus die Anmeldung statt findet.
+		\end{itemize}
+		\item[session] übernimmt Aufgaben, die bevor oder nachdem der Benutzer den Dienst in Anspruch nimmt, hat ausgeführt werden sollen (z.B. log-Datei schreiben, Variablen setzen, etc.).\index{PAM!session@\texttt{session}}
+		\item[password] wird aufgerufen, wenn ein Benutzer seinen Zugangscode ändern will. Ein Zuganscode kann z.B. ein Passwort, ein Fingerabdruck oder Ähnliches sein.\index{PAM!password@\texttt{password}} 
+	\end{description}
+	\item[Wichtigkeit] bestimmt, was für eine Bedeutung Erfolg bzw. Misserfolg der Anmeldung haben.
+	\begin{description}
+		\item[required] heisst, das Modul ist Notwendig. Schlägt dieses fehl, schlägt die gesamte Anmeldung fehl. Die folgenden Module werden aber dennoch abgearbeitet, um möglichst viel über einen potentiellen Angreifer zu erfahren und ihm möglichst wenig Anhaltspunkte über den Grund des Scheiterns zu geben.
+		\item[requisite] wie required, jedoch bricht der Anmeldevorgang sofort ab.
+		\item[sufficient] bedeutet, dass der Erfolg dieses Moduls für eine erfolgreiche Anmeldung ausreicht, falls vorher kein required-Modul fehlgeschlagen hat.
+		\item[optional] hat keinen Einfluss auf den Anmeldevorgang, ausser, wenn \emph{nur} optional-Module in der Datei stehen.
+	\end{description}
+	\item[Modul und Argumente] beschreiben, welche Module für welche Aufgaben in welcher Reihenfolge verwendet werden.
+\end{description}
+Wie man sieht, ist PAM ein sehr mächtiges Werkzeug und ein zentraler Mechanismus der Sicherheit. Die gegebene Beschreibung ist eine Einführung. Es gibt sehr detaillierte Dokumentationen zu PAM. Diese können vom Web \cite{pam} heruntergeladen werden.
+
+Im den vorhergehenden Abschnitten war immer die Rede vom \textit{login} Programm. PAM ist aber keineswegs auf dieses Programm beschränkt. Wie schon erwähnt, kann PAM in Verbindung mit jedem Programm, das PAM unterstützt, verwendet werden.
+
+
